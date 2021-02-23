@@ -19,13 +19,10 @@ class SortedLinkedList
 {
 public:
     SortedLinkedList(int size = 0, Node* first = NULL);
-    bool IsFull();
     bool IsEmpty();
-    void MakeEmpty();
     void AddItem(int item);
     int DeleteItem(int item);
     int Search(int item);
-    int Retrieve(int item);
     void PrintList();
     int GetSize();
 
@@ -40,41 +37,13 @@ SortedLinkedList::SortedLinkedList(int size, Node* first)
     First = first;
 }
 
-
-bool SortedLinkedList::IsFull()
-{
-    bool flag = false;
-    Node* temp = new Node();
-    flag = temp == NULL;
-    delete temp;
-    return flag;
-}
-
 bool SortedLinkedList::IsEmpty()
 {
     return Size == 0;
 }
 
-void SortedLinkedList::MakeEmpty()
-{
-    Node* temp = First;
-    while (temp->Next != NULL)
-    {
-        First = First->Next;
-        delete temp;
-        temp = First;
-    }
-    delete temp;
-    Size = 0;
-}
-
 void SortedLinkedList::AddItem(int item)
 {
-    if (IsFull())
-    {
-        std::cout << "List is full. Item can't be added.\n";
-        return;
-    }
     if (Size == 0 || item < First->Value)
     {
         First = new Node(item, First);
@@ -87,12 +56,6 @@ void SortedLinkedList::AddItem(int item)
             now = now->Next;
         }
 
-        if (now->Next && item == now->Next->Value || now->Value == item)
-        {
-            std::cout << "Item is already in the list.\n";
-            return;
-        }
-
         now->Next = new Node(item, now->Next);
     }
     Size++;
@@ -100,41 +63,43 @@ void SortedLinkedList::AddItem(int item)
 
 int SortedLinkedList::DeleteItem(int item)
 {
-    if (Search(item) != -1)
-    {
-        Node* prev = NULL;
-        Node* now = First;
-        while (true)
-        {
-            if (now->Value == item)
-            {
-                break;
-            }
-            else
-            {
-                prev = now;
-                now = now->Next;
-            }
-        }
+    int counter = 0;
 
-        if (prev == NULL)
+    while (First && First->Value == item)
+    {
+        Node* temp = First;
+        First = First->Next;
+        delete temp;
+        counter++;
+    }
+
+    if (!counter)
+    {
+        Node* now = First;
+
+        while (now && now->Value < item)
         {
-            First = now->Next;
+            while (now->Next && now->Next->Value == item)
+            {
+                Node* temp = now->Next;
+                now->Next = temp->Next;
+                delete temp;
+                counter++;
+            }
+            now = now->Next;
         }
-        else if (now->Next == NULL)
-        {
-            prev->Next = NULL;
-        }
-        else
-        {
-            prev->Next = now->Next;
-        }
-        delete now;
-        Size--;
+    }
+
+    Size -= counter;
+
+    if (counter)
+    {
+        std::cout << "Deleted " << counter << " occurences of " << item << '\n';
         return item;
     }
     else
     {
+        std::cout << "Item was not found in list\n";
         return -1;
     }
 }
@@ -169,26 +134,6 @@ int SortedLinkedList::Search(int item)
     }
 }
 
-int SortedLinkedList::Retrieve(int item)
-{
-    int flag = -1;
-    Node* temp = First;
-
-    while (temp != NULL)
-    {
-        if (temp->Value == item)
-        {
-            flag = item;
-            break;
-        }
-        else
-        {
-            temp = temp->Next;
-        }
-    }
-    return flag;
-}
-
 void SortedLinkedList::PrintList()
 {
     if (!IsEmpty())
@@ -208,6 +153,7 @@ void SortedLinkedList::PrintList()
         std::cout << "List is empty. \n";
     }
 }
+
 int SortedLinkedList::GetSize()
 {
     return Size;
@@ -240,36 +186,23 @@ int main()
     bool flag = true;
     int item;
 
+    std::cout << "Choose operation:\n "
+        << "1 - IsEmpty\n "
+        << "2 - AddItem\n "
+        << "3 - DeleteItem\n "
+        << "4 - Search\n "
+        << "5 - PrintList\n "
+        << "6 - GetSize\n "
+        << "0 - Quit program\n ";
+
     while (flag)
     {
-        std::cout << "Choose operation:\n "
-            << "1 - IsFull\n "
-            << "2 - IsEmpty\n "
-            << "3 - AddItem\n "
-            << "4 - DeleteItem\n "
-            << "5 - Search\n "
-            << "6 - Retrieve\n "
-            << "7 - PrintList\n "
-            << "8 - MakeEmpty\n "
-            << "0 - Quit program\n ";
-
         int operation;
         std::cin >> operation;
 
         switch (operation)
         {
         case 1:
-            if (List->IsFull())
-            {
-                std::cout << "List is full\n";
-            }
-            else
-            {
-                std::cout << "List is not full\n";
-            }
-            break;
-
-        case 2:
             if (List->IsEmpty())
             {
                 std::cout << "List is empty\n";
@@ -280,21 +213,19 @@ int main()
             }
             break;
 
-        case 3:
+        case 2:
             std::cout << "Enter an item to add: ";
             std::cin >> item;
             List->AddItem(item);
-            std::cout << "Your list now: ";
             List->PrintList();
             break;
 
-        case 4:
+        case 3:
             std::cout << "Enter an item to delete: ";
             std::cin >> item;
             if (item == List->DeleteItem(item))
             {
                 std::cout << "Item was deleted\n";
-                std::cout << "Your list now: ";
                 List->PrintList();
             }
             else
@@ -303,29 +234,21 @@ int main()
             }
             break;
 
-        case 5:
+        case 4:
             std::cout << "Enter an item to search: ";
             std::cin >> item;
             std::cout << "Its position in the list: " << List->Search(item) << "\n";
             break;
 
+        case 5:
+            List->PrintList();
+            break;
+
         case 6:
-            std::cout << "Enter an item to retrieve: ";
-            std::cin >> item;
-            std::cout << "Retrieved item: " << List->Retrieve(item) << "\n";
+            std::cout << "Size of your list: " << List->GetSize() << "\n";
             break;
 
-        case 7:
-            std::cout << "Your list: ";
-            List->PrintList();
-            break;
-
-        case 8:
-            List->MakeEmpty();
-            List->PrintList();
-            break;
-
-        case 0:
+        default:
             flag = false;
             break;
         }
@@ -333,4 +256,7 @@ int main()
     }
 
 }
+
+
+
 
