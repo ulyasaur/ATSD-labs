@@ -30,6 +30,8 @@ public:
     int Search(T item);
     void PrintList();
     int GetSize();
+    SortedLinkedList<T>* CopyReverse();
+    void AddItemUnsorted(T item);
     void Interface();
 
 private:
@@ -165,6 +167,33 @@ void SortedLinkedList<T>::PrintList()
 }
 
 template <class T>
+int SortedLinkedList<T>::GetSize()
+{
+    return Size;
+}
+
+template <class T>
+SortedLinkedList<T>* SortedLinkedList<T>::CopyReverse()
+{
+    SortedLinkedList* cur = new SortedLinkedList();
+    Node<T>* now = First;
+
+    while (now)
+    {
+        cur->AddItemUnsorted(now->Value);
+        now = now->Next;
+    }
+    return cur;
+}
+
+template <class T>
+void SortedLinkedList<T>::AddItemUnsorted(T value)
+{
+    First = new Node<T>(value, First);
+    Size++;
+}
+
+template <class T>
 void SortedLinkedList<T>::Interface()
 {
     std::cout << "Your list: ";
@@ -181,6 +210,7 @@ void SortedLinkedList<T>::Interface()
         << "4 - Search\n "
         << "5 - PrintList\n "
         << "6 - GetSize\n "
+        << "7 - CopyReverse\n "
         << "0 - Quit program\n ";
 
     while (flag)
@@ -229,6 +259,11 @@ void SortedLinkedList<T>::Interface()
             std::cout << "Size of your list: " << GetSize() << "\n";
             break;
 
+        case 7:
+            copied = CopyReverse();
+            copied->PrintList();
+            break;
+
         case 0:
             flag = false;
             break;
@@ -246,7 +281,7 @@ int main()
     {
         SortedLinkedList <std::string>* List = new SortedLinkedList<std::string>();
 
-        std::cout << "Enter your linked list. Enter negative number to stop.\n";
+        std::cout << "Enter your linked list. Enter -1 to stop.\n";
 
         std::string n;
 
@@ -270,7 +305,7 @@ int main()
     {
         SortedLinkedList <int>* List = new SortedLinkedList<int>();
 
-        std::cout << "Enter your linked list. Enter negative number to stop.\n";
+        std::cout << "Enter your linked list. Enter -1 to stop.\n";
 
         int n;
 
