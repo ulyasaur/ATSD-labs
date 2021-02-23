@@ -1,73 +1,83 @@
 ﻿#include <iostream>
+#include <string>
+#include <typeinfo>
 
+template <class T>
 class Node
 {
 public:
-    int Value;
+    T Value;
     Node* Next;
 
-    Node(int val = -1, Node* next = NULL);
+    Node(T val = "", Node* next = NULL);
 };
 
-Node::Node(int val, Node* next)
+template <class T>
+Node<T>::Node(T val, Node* next)
 {
     Value = val;
     Next = next;
 }
 
+template <class T>
 class SortedLinkedList
 {
 public:
-    SortedLinkedList(int size = 0, Node* first = NULL);
+    SortedLinkedList(int size = 0, Node<T>* first = NULL);
     bool IsEmpty();
-    void AddItem(int item);
-    int DeleteItem(int item);
-    int Search(int item);
+    void AddItem(T item);
+    void DeleteItem(T item);
+    int Search(T item);
     void PrintList();
     int GetSize();
+    void Interface();
 
 private:
     int Size;
-    Node* First;
+    Node<T>* First;
 };
 
-SortedLinkedList::SortedLinkedList(int size, Node* first)
+template <class T>
+SortedLinkedList<T>::SortedLinkedList(int size, Node<T>* first)
 {
     Size = size;
     First = first;
 }
 
-bool SortedLinkedList::IsEmpty()
+template <class T>
+bool SortedLinkedList<T>::IsEmpty()
 {
     return Size == 0;
 }
 
-void SortedLinkedList::AddItem(int item)
+template <class T>
+void SortedLinkedList<T>::AddItem(T item)
 {
     if (Size == 0 || item < First->Value)
     {
-        First = new Node(item, First);
+        First = new Node<T>(item, First);
     }
     else
     {
-        Node* now = First;
+        Node<T>* now = First;
         while (now->Next != NULL && item > now->Next->Value)
         {
             now = now->Next;
         }
 
-        now->Next = new Node(item, now->Next);
+        now->Next = new Node<T>(item, now->Next);
     }
     Size++;
 }
 
-int SortedLinkedList::DeleteItem(int item)
+template <class T>
+void SortedLinkedList<T>::DeleteItem(T item)
 {
     int counter = 0;
 
     while (First && First->Value == item)
     {
-        Node* temp = First;
+        Node<T>* temp = First;
         First = First->Next;
         delete temp;
         counter++;
@@ -75,13 +85,13 @@ int SortedLinkedList::DeleteItem(int item)
 
     if (!counter)
     {
-        Node* now = First;
+        Node<T>* now = First;
 
         while (now && now->Value < item)
         {
             while (now->Next && now->Next->Value == item)
             {
-                Node* temp = now->Next;
+                Node<T>* temp = now->Next;
                 now->Next = temp->Next;
                 delete temp;
                 counter++;
@@ -95,20 +105,19 @@ int SortedLinkedList::DeleteItem(int item)
     if (counter)
     {
         std::cout << "Deleted " << counter << " occurences of " << item << '\n';
-        return item;
     }
     else
     {
         std::cout << "Item was not found in list\n";
-        return -1;
     }
 }
 
-int SortedLinkedList::Search(int item)
+template <class T>
+int SortedLinkedList<T>::Search(T item)
 {
     bool flag = false;
     int ind = 0;
-    Node* temp = First;
+    Node<T>* temp = First;
 
     while (temp != NULL)
     {
@@ -134,12 +143,13 @@ int SortedLinkedList::Search(int item)
     }
 }
 
-void SortedLinkedList::PrintList()
+template <class T>
+void SortedLinkedList<T>::PrintList()
 {
     if (!IsEmpty())
     {
         std::cout << "List: ";
-        Node* temp = First;
+        Node<T>* temp = First;
 
         while (temp != NULL)
         {
@@ -154,37 +164,15 @@ void SortedLinkedList::PrintList()
     }
 }
 
-int SortedLinkedList::GetSize()
+template <class T>
+void SortedLinkedList<T>::Interface()
 {
-    return Size;
-}
-
-int main()
-{
-    SortedLinkedList* List = new SortedLinkedList();
-    std::cout << "Enter your linked list. Enter negative number to stop.\n";
-
-    int n;
-
-    while (true)
-    {
-        std::cin >> n;
-
-        if (n >= 0)
-        {
-            List->AddItem(n);
-        }
-        else
-        {
-            break;
-        }
-    }
-
     std::cout << "Your list: ";
-    List->PrintList();
+    PrintList();
 
     bool flag = true;
-    int item;
+    T item;
+    SortedLinkedList<T>* copied = new SortedLinkedList<T>();
 
     std::cout << "Choose operation:\n "
         << "1 - IsEmpty\n "
@@ -203,7 +191,7 @@ int main()
         switch (operation)
         {
         case 1:
-            if (List->IsEmpty())
+            if (IsEmpty())
             {
                 std::cout << "List is empty\n";
             }
@@ -216,47 +204,90 @@ int main()
         case 2:
             std::cout << "Enter an item to add: ";
             std::cin >> item;
-            List->AddItem(item);
-            List->PrintList();
+            AddItem(item);
+            PrintList();
             break;
 
         case 3:
             std::cout << "Enter an item to delete: ";
             std::cin >> item;
-            if (item == List->DeleteItem(item))
-            {
-                std::cout << "Item was deleted\n";
-                List->PrintList();
-            }
-            else
-            {
-                std::cout << "Item was not deleted\n";
-            }
+            DeleteItem(item);
+            PrintList();
             break;
 
         case 4:
             std::cout << "Enter an item to search: ";
             std::cin >> item;
-            std::cout << "Its position in the list: " << List->Search(item) << "\n";
+            std::cout << "Its position in the list: " << Search(item) << "\n";
             break;
 
         case 5:
-            List->PrintList();
+            PrintList();
             break;
 
         case 6:
-            std::cout << "Size of your list: " << List->GetSize() << "\n";
+            std::cout << "Size of your list: " << GetSize() << "\n";
             break;
 
-        default:
+        case 0:
             flag = false;
             break;
         }
-
     }
-
 }
 
+int main()
+{
+    std::cout << "Choose int {i} or string {s}\n";
+    char op;
+    std::cin >> op;
 
+    if (op == 's')
+    {
+        SortedLinkedList <std::string>* List = new SortedLinkedList<std::string>();
 
+        std::cout << "Enter your linked list. Enter negative number to stop.\n";
 
+        std::string n;
+
+        while (true)
+        {
+            std::cin >> n;
+
+            if (n != "-1")
+            {
+                List->AddItem(n);
+            }
+            else
+            {
+                break;
+            }
+        }
+
+        List->Interface();
+    }
+    else
+    {
+        SortedLinkedList <int>* List = new SortedLinkedList<int>();
+
+        std::cout << "Enter your linked list. Enter negative number to stop.\n";
+
+        int n;
+
+        while (true)
+        {
+            std::cin >> n;
+
+            if (n != -1)
+            {
+                List->AddItem(n);
+            }
+            else
+            {
+                break;
+            }
+        }
+
+        List->Interface();
+    }
+}
