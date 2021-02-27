@@ -25,12 +25,15 @@ public:
 
     bool IsEmpty();
     bool IsFull();
-
+    int Size();
+    bool Search(int item);
     void PrintPreorder();
     void PrintInorder();
     void PrintPostorder();
 
 private:
+    void Size(int& size, Node* next);
+    bool Search(int item, Node* next);
     void PrintPreorder(Node* next);
     void PrintInorder(Node* next);
     void PrintPostorder(Node* next);
@@ -53,6 +56,51 @@ bool BBST::IsFull()
     delete temp;
 
     return result;
+}
+
+int BBST::Size()
+{
+    int size = 0;
+    Size(size, Root);
+
+    return size;
+}
+
+void BBST::Size(int& size, Node* next)
+{
+    if (next)
+    {
+        Size(size, next->Left);
+        Size(size, next->Right);
+        size++;
+    }
+}
+
+bool BBST::Search(int item)
+{
+    return Search(item, Root);
+}
+
+bool BBST::Search(int item, Node* next)
+{
+
+    if (next)
+    {
+        if (item == next->Value)
+        {
+            return true;
+        }
+        else if (item < next->Value)
+        {
+            return Search(item, next->Left);
+        }
+        else
+        {
+            return Search(item, next->Right);
+        }
+    }
+
+    return false;
 }
 
 void BBST::PrintPreorder()
