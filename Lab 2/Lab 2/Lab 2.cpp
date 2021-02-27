@@ -22,11 +22,28 @@ class BBST
 public:
     Node* Root;
     BBST(Node* root = NULL);
+
+    bool IsEmpty();
+    bool IsFull();
 };
 
 BBST::BBST(Node* root)
 {
     Root = root;
+}
+
+bool BBST::IsEmpty()
+{
+    return Root == NULL;
+}
+
+bool BBST::IsFull()
+{
+    Node* temp = new Node();
+    bool result = temp == NULL;
+    delete temp;
+
+    return result;
 }
 
 int main()
