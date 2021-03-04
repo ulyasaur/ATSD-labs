@@ -1,18 +1,23 @@
 ﻿#include <iostream>
+#include <algorithm>
 
 class Node
 {
 public:
     int Value;
+    int BalanceFactor;
+    int Height;
     Node* Left;
     Node* Right;
 
-    Node(int value = 0, Node* l = NULL, Node* r = NULL);
+    Node(int value = 0, int bf = 0, int height = 0, Node* l = NULL, Node* r = NULL);
 };
 
-Node::Node(int value, Node* l, Node* r)
+Node::Node(int value, int bf, int height, Node* l, Node* r)
 {
     Value = value;
+    BalanceFactor = bf;
+    Height = height;
     Left = l;
     Right = r;
 }
@@ -26,12 +31,18 @@ public:
     bool IsEmpty();
     bool IsFull();
     int Size();
+    void AddItem(int item);
     bool Search(int item);
     void PrintPreorder();
     void PrintInorder();
     void PrintPostorder();
 
 private:
+    void UpdateNode(Node* node);
+    Node* BalanceTree(Node* node);
+    Node* AddItem(Node* node, int item);
+    Node* RightRotation(Node* node);
+    Node* LeftRotation(Node* node);
     void Size(int& size, Node* next);
     bool Search(int item, Node* next);
     void PrintPreorder(Node* next);
@@ -74,6 +85,107 @@ void BBST::Size(int& size, Node* next)
         Size(size, next->Right);
         size++;
     }
+}
+
+void BBST::UpdateNode(Node* node)
+{
+    int leftHeight;
+    if (node->Left == NULL)
+    {
+        leftHeight = -1;
+    }
+    else
+    {
+        leftHeight = node->Left->Height;
+    }
+
+    int rightHeight;
+    if (node->Right == NULL)
+    {
+        rightHeight = -1;
+    }
+    else
+    {
+        rightHeight = node->Right->Height;
+    }
+
+    node->Height = 1 + std::max(leftHeight, rightHeight);
+    node->BalanceFactor = rightHeight - leftHeight;
+}
+
+Node* BBST::BalanceTree(Node* node)
+{
+    if (node->BalanceFactor == -2)
+    {
+        if (node->Left->BalanceFactor <= 0)
+        {
+            return RightRotation(node);
+        }
+        else
+        {
+            node->Left = LeftRotation(node->Left);
+            return RightRotation(node);
+        }
+    }
+    else if (node->BalanceFactor == 2)
+    {
+        if (node->Right->BalanceFactor >= 0)
+        {
+            return LeftRotation(node);
+        }
+        else
+        {
+            node->Right = RightRotation(node->Right);
+            return LeftRotation(node);
+        }
+    }
+}
+
+Node* BBST::RightRotation(Node* node)
+{
+    Node* parent = node->Left;
+    node->Left = parent->Right;
+    parent->Right = node;
+    UpdateNode(node);
+    UpdateNode(parent);
+    return parent;
+}
+
+Node* BBST::LeftRotation(Node* node)
+{
+    Node* parent = node->Right;
+    node->Right = parent->Left;
+    parent->Left = node;
+    UpdateNode(node);
+    UpdateNode(parent);
+    return parent;
+}
+
+void BBST::AddItem(int item)
+{
+    Root = AddItem(Root, item);
+}
+
+Node* BBST::AddItem(Node* node, int item)
+{
+    if (node == NULL)
+    {
+        return new Node(item);
+    }
+
+    if (item < node->Value)
+    {
+        node->Left = AddItem(node->Left, item);
+    }
+    else
+    {
+        node->Right = AddItem(node->Right, item);
+    }
+
+    UpdateNode(node);
+    
+
+    return BalanceTree(node);
 }
 
 bool BBST::Search(int item)
