@@ -32,6 +32,7 @@ public:
     bool IsFull();
     int Size();
     void AddItem(int item);
+    void DeleteItem(int item);
     bool Search(int item);
     void PrintPreorder();
     void PrintInorder();
@@ -41,6 +42,7 @@ private:
     void UpdateNode(Node* node);
     Node* BalanceTree(Node* node);
     Node* AddItem(Node* node, int item);
+    Node* DeleteItem(Node* node, int item);
     Node* RightRotation(Node* node);
     Node* LeftRotation(Node* node);
     void Size(int& size, Node* next);
@@ -163,7 +165,14 @@ Node* BBST::LeftRotation(Node* node)
 
 void BBST::AddItem(int item)
 {
-    Root = AddItem(Root, item);
+    if (!Search(item))
+    {
+        Root = AddItem(Root, item);
+    }
+    else
+    {
+        std::cout << "Item is already in the tree\n";
+    }
 }
 
 Node* BBST::AddItem(Node* node, int item)
@@ -185,6 +194,74 @@ Node* BBST::AddItem(Node* node, int item)
     UpdateNode(node);
     
 
+    return BalanceTree(node);
+}
+
+void BBST::DeleteItem(int item)
+{
+    if (Search(item))
+    {
+        DeleteItem(Root, item);
+    }
+    else
+    {
+        std::cout << "Item isn't in the tree.\n";
+    }
+}
+
+Node* BBST::DeleteItem(Node* node, int item)
+{
+    if (node == NULL)
+    {
+        return NULL;
+    } 
+
+    if (item > node->Value)
+    {
+        node->Right = DeleteItem(node->Right, item);
+    }
+    else if (item < node->Value)
+    {
+        node->Left = DeleteItem(node->Left, item);
+    }
+    else
+    {
+        if (node->Left == NULL) 
+        {
+            return node->Right;
+        }
+        else if (node->Right == NULL) 
+        {
+            return node->Left;
+        }
+        else 
+        {
+            if (node->Left->Height > node->Right->Height) 
+            {
+                Node* temp = node->Left;
+                while (temp->Right != NULL)
+                {
+                    temp = temp->Right;
+                }
+                node->Value = temp->Value;
+
+                node->Left = DeleteItem(node->Left, temp->Value);
+            }
+            else 
+            {
+                Node* temp = node->Right;
+                while (temp->Left != NULL)
+                {
+                    temp = temp->Left;
+                }
+                node->Value = temp->Value;
+
+                node->Right = DeleteItem(node->Right, temp->Value);
+            }
+        }
+    }
+
+    UpdateNode(node);
     return BalanceTree(node);
 }
 
@@ -262,5 +339,5 @@ void BBST::PrintPostorder(Node* next)
 
 int main()
 {
-    
+
 }
