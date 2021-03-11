@@ -28,6 +28,7 @@ public:
     Node* Root;
     BBST(Node* root = NULL);
 
+    void Interface();
     bool IsEmpty();
     bool IsFull();
     int Size();
@@ -295,6 +296,7 @@ bool BBST::Search(int item, Node* next)
 void BBST::PrintPreorder()
 {
     PrintPreorder(Root);
+    std::cout << "\n";
 }
 
 void BBST::PrintPreorder(Node* next)
@@ -310,6 +312,7 @@ void BBST::PrintPreorder(Node* next)
 void BBST::PrintInorder()
 {
     PrintInorder(Root);
+    std::cout << "\n";
 }
 
 void BBST::PrintInorder(Node* next)
@@ -325,6 +328,7 @@ void BBST::PrintInorder(Node* next)
 void BBST::PrintPostorder()
 {
     PrintPostorder(Root);
+    std::cout << "\n";
 }
 
 void BBST::PrintPostorder(Node* next)
@@ -337,7 +341,121 @@ void BBST::PrintPostorder(Node* next)
     }
 }
 
+void BBST::Interface()
+{
+    std::cout << "Enter your linked list. Enter -1 to stop.\n";
+
+    int n;
+
+    while (true)
+    {
+        std::cin >> n;
+
+        if (n != -1)
+        {
+            AddItem(n);
+        }
+        else
+        {
+            break;
+        }
+    }
+
+    bool flag = true;
+    int item;
+
+    std::cout << "Choose operation:\n "
+        << "1 - IsEmpty\n "
+        << "2 - IsFull\n "
+        << "3 - AddItem\n "
+        << "4 - DeleteItem\n "
+        << "5 - Search\n "
+        << "6 - PrintPreorder\n "
+        << "7 - PrintInorder\n "
+        << "8 - PrintPostorder\n "
+        << "9 - Size\n "
+        << "0 - Quit program\n ";
+
+    while (flag)
+    {
+        int operation;
+        std::cin >> operation;
+
+        switch (operation)
+        {
+        case 1:
+            if (IsEmpty())
+            {
+                std::cout << "Tree is empty\n";
+            }
+            else
+            {
+                std::cout << "Tree is not empty\n";
+            }
+            break;
+
+        case 2:
+            if (IsFull())
+            {
+                std::cout << "Tree is full\n";
+            }
+            else
+            {
+                std::cout << "Tree is not full\n";
+            }
+            break;
+
+        case 3:
+            std::cout << "Enter an item to add: ";
+            std::cin >> item;
+            AddItem(item);
+            break;
+
+        case 4:
+            std::cout << "Enter an item to delete: ";
+            std::cin >> item;
+            DeleteItem(item);
+            break;
+
+        case 5:
+            std::cout << "Enter an item to search: ";
+            std::cin >> item;
+
+            if (Search(item))
+            {
+                std::cout << "Item is in the tree\n";
+            }
+            else
+            {
+                std::cout << "Item is not in the tree\n";
+            }
+            break;
+
+        case 6:
+            PrintPreorder();
+            break;
+
+        case 7:
+            PrintInorder();
+            break;
+
+        case 8:
+            PrintPostorder();
+            break;
+
+        case 9:
+            std::cout << "Size of your tree: " << Size() << "\n";
+            break;
+
+        case 0:
+            flag = false;
+            break;
+        }
+    }
+}
+
 int main()
 {
-
+    BBST* tree = new BBST();
+    tree->Interface();
 }
