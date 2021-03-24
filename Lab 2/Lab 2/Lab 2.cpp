@@ -1,19 +1,21 @@
 ﻿#include <iostream>
 #include <algorithm>
 
+template <class T>
 class Node
 {
 public:
-    int Value;
+    T Value;
     int BalanceFactor;
     int Height;
-    Node* Left;
-    Node* Right;
+    Node<T>* Left;
+    Node<T>* Right;
 
-    Node(int value = 0, int bf = 0, int height = 0, Node* l = NULL, Node* r = NULL);
+    Node(T value = 0, int bf = 0, int height = 0, Node<T>* l = NULL, Node<T>* r = NULL);
 };
 
-Node::Node(int value, int bf, int height, Node* l, Node* r)
+template <class T>
+Node<T>::Node(T value, int bf, int height, Node<T>* l, Node<T>* r)
 {
     Value = value;
     BalanceFactor = bf;
@@ -22,57 +24,62 @@ Node::Node(int value, int bf, int height, Node* l, Node* r)
     Right = r;
 }
 
+template <class T>
 class BBST
 {
 public:
-    Node* Root;
-    BBST(Node* root = NULL);
+    Node<T>* Root;
+    BBST(Node<T>* root = NULL);
 
     void Interface();
     bool IsEmpty();
     bool IsFull();
     int Size();
-    void AddItem(int item);
-    void DeleteItem(int item);
-    bool Search(int item);
+    void AddItem(T item);
+    void DeleteItem(T item);
+    bool Search(T item);
     void PrintPreorder();
     void PrintInorder();
     void PrintPostorder();
 
 private:
-    void UpdateNode(Node* node);
-    Node* BalanceTree(Node* node);
-    Node* AddItem(Node* node, int item);
-    Node* DeleteItem(Node* node, int item);
-    Node* RightRotation(Node* node);
-    Node* LeftRotation(Node* node);
-    void Size(int& size, Node* next);
-    bool Search(int item, Node* next);
-    void PrintPreorder(Node* next);
-    void PrintInorder(Node* next);
-    void PrintPostorder(Node* next);
+    void UpdateNode(Node<T>* node);
+    Node<T>* BalanceTree(Node<T>* node);
+    Node<T>* AddItem(Node<T>* node, T item);
+    Node<T>* DeleteItem(Node<T>* node, T item);
+    Node<T>* RightRotation(Node<T>* node);
+    Node<T>* LeftRotation(Node<T>* node);
+    void Size(int& size, Node<T>* next);
+    bool Search(T item, Node<T>* next);
+    void PrintPreorder(Node<T>* next);
+    void PrintInorder(Node<T>* next);
+    void PrintPostorder(Node<T>* next);
 };
 
-BBST::BBST(Node* root)
+template <class T>
+BBST<T>::BBST(Node<T>* root)
 {
     Root = root;
 }
 
-bool BBST::IsEmpty()
+template <class T>
+bool BBST<T>::IsEmpty()
 {
     return Root == NULL;
 }
 
-bool BBST::IsFull()
+template <class T>
+bool BBST<T>::IsFull()
 {
-    Node* temp = new Node();
+    Node<T>* temp = new Node();
     bool result = temp == NULL;
     delete temp;
 
     return result;
 }
 
-int BBST::Size()
+template <class T>
+int BBST<T>::Size()
 {
     int size = 0;
     Size(size, Root);
@@ -80,7 +87,8 @@ int BBST::Size()
     return size;
 }
 
-void BBST::Size(int& size, Node* next)
+template <class T>
+void BBST<T>::Size(int& size, Node<T>* next)
 {
     if (next)
     {
@@ -90,7 +98,8 @@ void BBST::Size(int& size, Node* next)
     }
 }
 
-void BBST::UpdateNode(Node* node)
+template <class T>
+void BBST<T>::UpdateNode(Node<T>* node)
 {
     int leftHeight;
     if (node->Left == NULL)
@@ -116,7 +125,8 @@ void BBST::UpdateNode(Node* node)
     node->BalanceFactor = rightHeight - leftHeight;
 }
 
-Node* BBST::BalanceTree(Node* node)
+template <class T>
+Node<T>* BBST<T>::BalanceTree(Node<T>* node)
 {
     if (node->BalanceFactor == -2)
     {
@@ -144,9 +154,10 @@ Node* BBST::BalanceTree(Node* node)
     }
 }
 
-Node* BBST::RightRotation(Node* node)
+template <class T>
+Node<T>* BBST<T>::RightRotation(Node<T>* node)
 {
-    Node* parent = node->Left;
+    Node<T>* parent = node->Left;
     node->Left = parent->Right;
     parent->Right = node;
     UpdateNode(node);
@@ -154,9 +165,10 @@ Node* BBST::RightRotation(Node* node)
     return parent;
 }
 
-Node* BBST::LeftRotation(Node* node)
+template <class T>
+Node<T>* BBST<T>::LeftRotation(Node<T>* node)
 {
-    Node* parent = node->Right;
+    Node<T>* parent = node->Right;
     node->Right = parent->Left;
     parent->Left = node;
     UpdateNode(node);
@@ -164,23 +176,18 @@ Node* BBST::LeftRotation(Node* node)
     return parent;
 }
 
-void BBST::AddItem(int item)
+template <class T>
+void BBST<T>::AddItem(T item)
 {
-    if (!Search(item))
-    {
-        Root = AddItem(Root, item);
-    }
-    else
-    {
-        std::cout << "Item is already in the tree\n";
-    }
+    Root = AddItem(Root, item);
 }
 
-Node* BBST::AddItem(Node* node, int item)
+template <class T>
+Node<T>* BBST<T>::AddItem(Node<T>* node, T item)
 {
     if (node == NULL)
     {
-        return new Node(item);
+        return new Node<T>(item);
     }
 
     if (item < node->Value)
@@ -194,23 +201,20 @@ Node* BBST::AddItem(Node* node, int item)
 
     UpdateNode(node);
     
-
     return BalanceTree(node);
 }
 
-void BBST::DeleteItem(int item)
+template <class T>
+void BBST<T>::DeleteItem(T item)
 {
-    if (Search(item))
+    while (Search(item))
     {
         DeleteItem(Root, item);
     }
-    else
-    {
-        std::cout << "Item isn't in the tree.\n";
-    }
 }
 
-Node* BBST::DeleteItem(Node* node, int item)
+template <class T>
+Node<T>* BBST<T>::DeleteItem(Node<T>* node, T item)
 {
     if (node == NULL)
     {
@@ -239,7 +243,7 @@ Node* BBST::DeleteItem(Node* node, int item)
         {
             if (node->Left->Height > node->Right->Height) 
             {
-                Node* temp = node->Left;
+                Node<T>* temp = node->Left;
                 while (temp->Right != NULL)
                 {
                     temp = temp->Right;
@@ -250,7 +254,7 @@ Node* BBST::DeleteItem(Node* node, int item)
             }
             else 
             {
-                Node* temp = node->Right;
+                Node<T>* temp = node->Right;
                 while (temp->Left != NULL)
                 {
                     temp = temp->Left;
@@ -266,12 +270,14 @@ Node* BBST::DeleteItem(Node* node, int item)
     return BalanceTree(node);
 }
 
-bool BBST::Search(int item)
+template <class T>
+bool BBST<T>::Search(T item)
 {
     return Search(item, Root);
 }
 
-bool BBST::Search(int item, Node* next)
+template <class T>
+bool BBST<T>::Search(T item, Node<T>* next)
 {
 
     if (next)
@@ -293,13 +299,15 @@ bool BBST::Search(int item, Node* next)
     return false;
 }
 
-void BBST::PrintPreorder()
+template <class T>
+void BBST<T>::PrintPreorder()
 {
     PrintPreorder(Root);
     std::cout << "\n";
 }
 
-void BBST::PrintPreorder(Node* next)
+template <class T>
+void BBST<T>::PrintPreorder(Node<T>* next)
 {
     if (next)
     {
@@ -309,13 +317,15 @@ void BBST::PrintPreorder(Node* next)
     }
 }
 
-void BBST::PrintInorder()
+template <class T>
+void BBST<T>::PrintInorder()
 {
     PrintInorder(Root);
     std::cout << "\n";
 }
 
-void BBST::PrintInorder(Node* next)
+template <class T>
+void BBST<T>::PrintInorder(Node<T>* next)
 {
     if (next)
     {
@@ -325,13 +335,15 @@ void BBST::PrintInorder(Node* next)
     }
 }
 
-void BBST::PrintPostorder()
+template <class T>
+void BBST<T>::PrintPostorder()
 {
     PrintPostorder(Root);
     std::cout << "\n";
 }
 
-void BBST::PrintPostorder(Node* next)
+template <class T>
+void BBST<T>::PrintPostorder(Node<T>* next)
 {
     if (next)
     {
@@ -341,11 +353,12 @@ void BBST::PrintPostorder(Node* next)
     }
 }
 
-void BBST::Interface()
+template <class T>
+void BBST<T>::Interface()
 {
     std::cout << "Enter your linked list. Enter -1 to stop.\n";
 
-    int n;
+    T n;
 
     while (true)
     {
@@ -456,6 +469,7 @@ void BBST::Interface()
 
 int main()
 {
-    BBST* tree = new BBST();
+    BBST<int>* tree = new BBST<int>();
     tree->Interface();
+
 }
