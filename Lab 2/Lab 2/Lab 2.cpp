@@ -42,6 +42,7 @@ public:
     void PrintInorder();
     void PrintPostorder();
 
+    T FatherNode(T item);
     T CommonAncestor(T first, T second);
 
 private:
@@ -57,6 +58,7 @@ private:
     void PrintInorder(Node<T>* next);
     void PrintPostorder(Node<T>* next);
 
+    T FatherNode(T item, Node<T>* node);
     T CommonAncestor(T first, T second, Node<T>* node);
 };
 
@@ -75,7 +77,7 @@ bool BBST<T>::IsEmpty()
 template <class T>
 bool BBST<T>::IsFull()
 {
-    Node<T>* temp = new Node();
+    Node<T>* temp = new Node<T>();
     bool result = temp == NULL;
     delete temp;
 
@@ -362,9 +364,35 @@ void BBST<T>::PrintPostorder(Node<T>* next)
 
 
 template <class T>
+T BBST<T>::FatherNode(T item)
+{
+    if (Search(item) && item != Root->Value)
+    {
+        return FatherNode(item, Root);
+    }
+
+    return NULL;
+}
+
+template <class T>
+T BBST<T>::FatherNode(T item, Node<T>* node)
+{
+    if (node->Value < item && node->Right->Value != item)
+    {
+        return FatherNode(item, node->Right);
+    }
+    else if (node->Value > item && node->Left->Value != item)
+    {
+        return FatherNode(item, node->Left);
+    }
+
+    return node->Value;
+}
+
+template <class T>
 T BBST<T>::CommonAncestor(T first, T second)
 {
-    if (Search(first) && Search(second))
+    if (Search(first) && Search(second) && Root->Value != first && Root->Value != second)
     {
         return CommonAncestor(first, second, Root);
     }
