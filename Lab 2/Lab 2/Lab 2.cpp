@@ -42,6 +42,7 @@ public:
     void PrintInorder();
     void PrintPostorder();
 
+    void PrintSorted();
     T FatherNode(T item);
     T CommonAncestor(T first, T second);
 
@@ -58,6 +59,8 @@ private:
     void PrintInorder(Node<T>* next);
     void PrintPostorder(Node<T>* next);
 
+    void PrintAsc(Node<T>* node);
+    void PrintDes(Node<T>* node);
     T FatherNode(T item, Node<T>* node);
     T CommonAncestor(T first, T second, Node<T>* node);
 };
@@ -359,6 +362,38 @@ void BBST<T>::PrintPostorder(Node<T>* next)
         PrintPostorder(next->Left);
         PrintPostorder(next->Right);
         std::cout << next->Value << " ";
+    }
+}
+
+template <class T>
+void BBST<T>::PrintSorted()
+{
+
+    PrintAsc(Root);
+    std::cout << "\n";
+    PrintDes(Root);
+    std::cout << "\n";
+}
+
+template <class T>
+void BBST<T>::PrintAsc(Node<T>* node)
+{
+    if (node != NULL)
+    {
+        PrintAsc(node->Left);
+        std::cout << node->Value << " ";
+        PrintAsc(node->Right);
+    }
+}
+
+template <class T>
+void BBST<T>::PrintDes(Node<T>* node)
+{
+    if (node != NULL)
+    {
+        PrintDes(node->Right);
+        std::cout << node->Value << " ";
+        PrintDes(node->Left);
     }
 }
 
