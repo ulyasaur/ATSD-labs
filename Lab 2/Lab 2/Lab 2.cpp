@@ -66,6 +66,7 @@ private:
     void PrintDes(Node<T>* node);
     void CountNode(Node<T>* node, int& counter);
     void SumKeys(Node<T>* node, T& sum);
+    T FindSecondLargest();
     T FatherNode(T item, Node<T>* node);
     T CommonAncestor(T first, T second, Node<T>* node);
 };
@@ -443,6 +444,19 @@ void BBST<T>::SumKeys(Node<T>* node, T& sum)
         }
         SumKeys(node->Left, sum);
     }
+}
+
+template <class T>
+T BBST<T>::FindSecondLargest()
+{
+    Node<T>* temp = Root;
+
+    while (temp->Right->Right)
+    {
+        temp = temp->Right;
+    }
+
+    return temp->Value;
 }
 
 template <class T>
