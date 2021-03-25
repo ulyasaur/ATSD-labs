@@ -42,6 +42,8 @@ public:
     void PrintInorder();
     void PrintPostorder();
 
+    T CommonAncestor(T first, T second);
+
 private:
     void UpdateNode(Node<T>* node);
     Node<T>* BalanceTree(Node<T>* node);
@@ -54,6 +56,8 @@ private:
     void PrintPreorder(Node<T>* next);
     void PrintInorder(Node<T>* next);
     void PrintPostorder(Node<T>* next);
+
+    T CommonAncestor(T first, T second, Node<T>* node);
 };
 
 template <class T>
@@ -179,7 +183,10 @@ Node<T>* BBST<T>::LeftRotation(Node<T>* node)
 template <class T>
 void BBST<T>::AddItem(T item)
 {
-    Root = AddItem(Root, item);
+    if (!Search(item))
+    {
+        Root = AddItem(Root, item);
+    }
 }
 
 template <class T>
@@ -200,14 +207,14 @@ Node<T>* BBST<T>::AddItem(Node<T>* node, T item)
     }
 
     UpdateNode(node);
-    
+
     return BalanceTree(node);
 }
 
 template <class T>
 void BBST<T>::DeleteItem(T item)
 {
-    while (Search(item))
+    if (Search(item))
     {
         DeleteItem(Root, item);
     }
@@ -219,7 +226,7 @@ Node<T>* BBST<T>::DeleteItem(Node<T>* node, T item)
     if (node == NULL)
     {
         return NULL;
-    } 
+    }
 
     if (item > node->Value)
     {
@@ -231,17 +238,17 @@ Node<T>* BBST<T>::DeleteItem(Node<T>* node, T item)
     }
     else
     {
-        if (node->Left == NULL) 
+        if (node->Left == NULL)
         {
             return node->Right;
         }
-        else if (node->Right == NULL) 
+        else if (node->Right == NULL)
         {
             return node->Left;
         }
-        else 
+        else
         {
-            if (node->Left->Height > node->Right->Height) 
+            if (node->Left->Height > node->Right->Height)
             {
                 Node<T>* temp = node->Left;
                 while (temp->Right != NULL)
@@ -252,7 +259,7 @@ Node<T>* BBST<T>::DeleteItem(Node<T>* node, T item)
 
                 node->Left = DeleteItem(node->Left, temp->Value);
             }
-            else 
+            else
             {
                 Node<T>* temp = node->Right;
                 while (temp->Left != NULL)
@@ -351,6 +358,33 @@ void BBST<T>::PrintPostorder(Node<T>* next)
         PrintPostorder(next->Right);
         std::cout << next->Value << " ";
     }
+}
+
+
+template <class T>
+T BBST<T>::CommonAncestor(T first, T second)
+{
+    if (Search(first) && Search(second))
+    {
+        return CommonAncestor(first, second, Root);
+    }
+
+    return NULL;
+}
+
+template <class T>
+T BBST<T>::CommonAncestor(T first, T second, Node<T>* node)
+{
+    if (node->Value < first && node->Value < second && (node->Right->Value != first && node->Right->Value != second))
+    {
+        return CommonAncestor(first, second, node->Right);
+    }
+    else if (node->Value > first && node->Value > second && (node->Left->Value != first && node->Left->Value != second))
+    {
+        return CommonAncestor(first, second, node->Left);
+    }
+
+    return node->Value;
 }
 
 template <class T>
@@ -471,5 +505,4 @@ int main()
 {
     BBST<int>* tree = new BBST<int>();
     tree->Interface();
-
 }
