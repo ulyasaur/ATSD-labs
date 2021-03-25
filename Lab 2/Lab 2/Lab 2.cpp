@@ -43,6 +43,7 @@ public:
     void PrintPostorder();
 
     void PrintSorted();
+    bool IsBalanced();
     T FatherNode(T item);
     T CommonAncestor(T first, T second);
 
@@ -395,6 +396,12 @@ void BBST<T>::PrintDes(Node<T>* node)
         std::cout << node->Value << " ";
         PrintDes(node->Left);
     }
+}
+
+template <class T>
+bool BBST<T>::IsBalanced()
+{
+    return Root->BalanceFactor < 2 && Root->BalanceFactor > -2;
 }
 
 
