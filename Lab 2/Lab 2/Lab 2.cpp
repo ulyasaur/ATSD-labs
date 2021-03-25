@@ -43,6 +43,8 @@ public:
     void PrintPostorder();
 
     void PrintSorted();
+    int CountNode();
+    T SumKeys();
     bool IsBalanced();
     T FatherNode(T item);
     T CommonAncestor(T first, T second);
@@ -62,6 +64,8 @@ private:
 
     void PrintAsc(Node<T>* node);
     void PrintDes(Node<T>* node);
+    void CountNode(Node<T>* node, int& counter);
+    void SumKeys(Node<T>* node, T& sum);
     T FatherNode(T item, Node<T>* node);
     T CommonAncestor(T first, T second, Node<T>* node);
 };
@@ -399,11 +403,53 @@ void BBST<T>::PrintDes(Node<T>* node)
 }
 
 template <class T>
+int BBST<T>::CountNode()
+{
+    int counter = 0;
+    CountNode(Root, counter);
+    return counter;
+}
+
+template <class T>
+void BBST<T>::CountNode(Node<T>* node, int& counter)
+{
+    if (node != NULL)
+    {
+        if (node->Left != NULL)
+        {
+            CountNode(node->Left, ++counter);
+        }
+        CountNode(node->Right, counter);
+    }
+}
+
+template <class T>
+T BBST<T>::SumKeys()
+{
+    T sum = 0;
+    SumKeys(Root, sum);
+    return sum;
+}
+
+template <class T>
+void BBST<T>::SumKeys(Node<T>* node, T& sum)
+{
+    if (node != NULL)
+    {
+        if (node->Right != NULL)
+        {
+            sum += node->Right->Value;
+            SumKeys(node->Right, sum);
+        }
+        SumKeys(node->Left, sum);
+    }
+}
+
+template <class T>
 bool BBST<T>::IsBalanced()
 {
     return Root->BalanceFactor < 2 && Root->BalanceFactor > -2;
 }
-
 
 template <class T>
 T BBST<T>::FatherNode(T item)
