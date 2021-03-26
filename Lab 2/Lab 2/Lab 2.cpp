@@ -46,6 +46,7 @@ public:
     int CountNode();
     T SumKeys();
     T FindSecondLargest();
+    BBST<T>* CopyBBST();
     bool IsBalanced();
     bool EqualsBBST(BBST<T>* tree);
     T FatherNode(T item);
@@ -68,6 +69,7 @@ private:
     void PrintDes(Node<T>* node);
     void CountNode(Node<T>* node, int& counter);
     void SumKeys(Node<T>* node, T& sum);
+    Node<T>* CopyBBST(Node<T>* node, Node<T>* treeNode);
     void EqualsBBST(Node<T>* node, Node<T>* treeNode, bool& flag);
     T FatherNode(T item, Node<T>* node);
     T CommonAncestor(T first, T second, Node<T>* node);
@@ -453,12 +455,38 @@ T BBST<T>::FindSecondLargest()
 {
     Node<T>* temp = Root;
 
-    while (temp->Right->Right)
+    while (temp->Right && temp->Right->Right)
     {
         temp = temp->Right;
     }
 
     return temp->Value;
+}
+
+template <class T>
+BBST<T>* BBST<T>::CopyBBST()
+{
+    BBST<T>* copy = new BBST<T>();
+    copy->Root = CopyBBST(Root, copy->Root);
+    return copy;
+}
+
+template <class T>
+Node<T>* BBST<T>::CopyBBST(Node<T>* node, Node<T>* treeNode)
+{
+    if (node)
+    {
+        treeNode = new Node<T>(node->Value, node->BalanceFactor, node->Height);
+
+        treeNode->Left = CopyBBST(node->Left, treeNode->Left);
+        treeNode->Right = CopyBBST(node->Right, treeNode->Right);
+
+        return treeNode;
+    }
+    else
+    {
+        return NULL;
+    }
 }
 
 template <class T>
