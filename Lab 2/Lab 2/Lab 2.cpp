@@ -53,6 +53,7 @@ public:
     bool ContainsBBST(BBST<T>* tree);
     bool IsBalanced();
     bool EqualsBBST(BBST<T>* tree);
+    BBST<T>* SymmetricalBBST();
     T FatherNode(T item);
     T CommonAncestor(T first, T second);
 
@@ -79,6 +80,7 @@ private:
     void InsertBBST(Node<T>* node);
     bool ContainsBBST(Node<T>* node);
     void EqualsBBST(Node<T>* node, Node<T>* treeNode, bool& flag);
+    Node<T>* SymmetricalBBST(Node<T>* node, Node<T>* treeNode);
     T FatherNode(T item, Node<T>* node);
     T CommonAncestor(T first, T second, Node<T>* node);
 };
@@ -643,6 +645,32 @@ void BBST<T>::EqualsBBST(Node<T>* node, Node<T>* treeNode, bool& flag)
     {
         flag = false;
         return;
+    }
+}
+
+template <class T>
+BBST<T>* BBST<T>::SymmetricalBBST()
+{
+    BBST<T>* copy = new BBST<T>();
+    copy->Root = SymmetricalBBST(Root, copy->Root);
+    return copy;
+}
+
+template <class T>
+Node<T>* BBST<T>::SymmetricalBBST(Node<T>* node, Node<T>* treeNode)
+{
+    if (node)
+    {
+        treeNode = new Node<T>(node->Value, node->BalanceFactor, node->Height);
+
+        treeNode->Left = SymmetricalBBST(node->Right, treeNode->Left);
+        treeNode->Right = SymmetricalBBST(node->Left, treeNode->Right);
+
+        return treeNode;
+    }
+    else
+    {
+        return NULL;
     }
 }
 
