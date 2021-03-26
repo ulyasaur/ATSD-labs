@@ -1,3 +1,4 @@
 ﻿  Lab 2.cpp
-D:\Git\ATSD labs\Lab 2\Lab 2\Lab 2.cpp(182): warning C4715: BBST<int>::BalanceTree: значение возвращается не при всех путях выполнения
+D:\Git\ATSD labs\Lab 2\Lab 2\Lab 2.cpp(564): warning C4715: BBST<int>::FindMiddle: значение возвращается не при всех путях выполнения
+D:\Git\ATSD labs\Lab 2\Lab 2\Lab 2.cpp(207): warning C4715: BBST<int>::BalanceTree: значение возвращается не при всех путях выполнения
   Lab 2.vcxproj -> D:\Git\ATSD labs\Lab 2\Debug\Lab 2.exe
