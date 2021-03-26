@@ -45,7 +45,9 @@ public:
     void PrintSorted();
     int CountNode();
     T SumKeys();
+    T FindSecondLargest();
     bool IsBalanced();
+    bool EqualsBBST(BBST<T>* tree);
     T FatherNode(T item);
     T CommonAncestor(T first, T second);
 
@@ -66,7 +68,7 @@ private:
     void PrintDes(Node<T>* node);
     void CountNode(Node<T>* node, int& counter);
     void SumKeys(Node<T>* node, T& sum);
-    T FindSecondLargest();
+    void EqualsBBST(Node<T>* node, Node<T>* treeNode, bool& flag);
     T FatherNode(T item, Node<T>* node);
     T CommonAncestor(T first, T second, Node<T>* node);
 };
@@ -466,6 +468,35 @@ bool BBST<T>::IsBalanced()
 }
 
 template <class T>
+bool BBST<T>::EqualsBBST(BBST<T>* tree)
+{
+    bool flag = true;
+    EqualsBBST(Root, tree->Root, flag);
+    return flag;
+}
+
+template <class T>
+void BBST<T>::EqualsBBST(Node<T>* node, Node<T>* treeNode, bool& flag)
+{
+    if (node && treeNode)
+    {
+        if (node->Value != treeNode->Value)
+        {
+            flag = false;
+            return;
+        }
+
+        EqualsBBST(node->Left, treeNode->Left, flag);
+        EqualsBBST(node->Right, treeNode->Right, flag);
+    }
+    else if (node && !treeNode || !node && treeNode)
+    {
+        flag = false;
+        return;
+    }
+}
+
+template <class T>
 T BBST<T>::FatherNode(T item)
 {
     if (Search(item) && item != Root->Value)
@@ -539,7 +570,7 @@ void BBST<T>::Interface()
     }
 
     bool flag = true;
-    int item;
+    T item;
 
     std::cout << "Choose operation:\n "
         << "1 - IsEmpty\n "
