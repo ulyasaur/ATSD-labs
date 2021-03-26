@@ -1,5 +1,7 @@
 ﻿#include <iostream>
 #include <algorithm>
+#include <string>
+#include <type_traits>
 
 template <class T>
 class Node
@@ -11,7 +13,8 @@ public:
     Node<T>* Left;
     Node<T>* Right;
 
-    Node(T value = 0, int bf = 0, int height = 0, Node<T>* l = NULL, Node<T>* r = NULL);
+    Node(T value = NULL, int bf = 0, int height = 0, Node<T>* l = NULL, Node<T>* r = NULL);
+    Node(bool flag);
 };
 
 template <class T>
@@ -23,6 +26,13 @@ Node<T>::Node(T value, int bf, int height, Node<T>* l, Node<T>* r)
     Left = l;
     Right = r;
 }
+
+template <class T>
+Node<T>::Node(bool flag)
+{
+}
+
+
 
 template <class T>
 class BBST
@@ -47,7 +57,7 @@ public:
     int CountNode();
     T SumKeys();
     void DeleteEven();
-    T FindMiddle();
+    int FindMiddle();
     T FindSecondLargest();
     BBST<T>* CopyBBST();
     void InsertBBST(BBST<T>* tree);
@@ -75,9 +85,9 @@ private:
     void PrintAsc(Node<T>* node);
     void PrintDes(Node<T>* node);
     void CountNode(Node<T>* node, int& counter);
-    Node<T>* DeleteEven(Node<T>* node);
-    T FindMiddle(Node<T>* node, T key);
-    void SumKeys(Node<T>* node, T& sum);
+    Node<int>* DeleteEven(Node<int>* node);
+    int FindMiddle(Node<int>* node, int key);
+    T SumKeys(Node<T>* node);
     Node<T>* CopyBBST(Node<T>* node, Node<T>* treeNode);
     void InsertBBST(Node<T>* node);
     bool ContainsBBST(Node<T>* node);
@@ -123,7 +133,7 @@ bool BBST<T>::IsEmpty()
 template <class T>
 bool BBST<T>::IsFull()
 {
-    Node<T>* temp = new Node<T>();
+    Node<T>* temp = new Node<T>(true);
     bool result = temp == NULL;
     delete temp;
 
@@ -464,33 +474,38 @@ void BBST<T>::CountNode(Node<T>* node, int& counter)
 template <class T>
 T BBST<T>::SumKeys()
 {
-    T sum = 0;
-    SumKeys(Root, sum);
-    return sum;
+    return SumKeys(Root);
 }
 
 template <class T>
-void BBST<T>::SumKeys(Node<T>* node, T& sum)
+T BBST<T>::SumKeys(Node<T>* node)
 {
     if (node != NULL)
     {
-        if (node->Right != NULL)
+        T sum;
+        if (node->Right)
         {
-            sum += node->Right->Value;
-            SumKeys(node->Right, sum);
+            sum = node->Right->Value;
+            sum += SumKeys(node->Right);
         }
-        SumKeys(node->Left, sum);
+        
+        if (node->Left)
+        {
+            sum += SumKeys(node->Left);
+        }
+
+        return sum;
     }
 }
 
-template <class T>
-void BBST<T>::DeleteEven()
+template <>
+void BBST<int>::DeleteEven()
 {
     Root = DeleteEven(Root);
 }
 
-template <class T>
-Node<T>* BBST<T>::DeleteEven(Node<T>* node)
+template <>
+Node<int>* BBST<int>::DeleteEven(Node<int>* node)
 {
     if (node)
     {
@@ -511,11 +526,11 @@ Node<T>* BBST<T>::DeleteEven(Node<T>* node)
     return NULL;
 }
 
-template <class T>
-T BBST<T>::FindMiddle()
+template <>
+int BBST<int>::FindMiddle()
 {
-    T key = 0;
-    Node<T>* temp = Root;
+    int key = 0;
+    Node<int>* temp = Root;
 
     while (temp && temp->Left)
     {
@@ -538,17 +553,17 @@ T BBST<T>::FindMiddle()
 
 }
 
-template <class T>
-T BBST<T>::FindMiddle(Node<T>* node, T key)
+template <>
+int BBST<int>::FindMiddle(Node<int>* node, int key)
 {
     if (node)
     {
-        T l = FindMiddle(node->Left, key);
-        T r = FindMiddle(node->Right, key);
+        int l = FindMiddle(node->Left, key);
+        int r = FindMiddle(node->Right, key);
 
-        T nval = abs(node->Value - key);
-        T lval = abs(l - key);
-        T rval = abs(r - key);
+        int nval = abs(node->Value - key);
+        int lval = abs(l - key);
+        int rval = abs(r - key);
 
         if (nval < lval && nval < rval)
         {
@@ -705,7 +720,7 @@ T BBST<T>::FatherNode(T item)
         return FatherNode(item, Root);
     }
 
-    return NULL;
+    return item;
 }
 
 template <class T>
@@ -731,7 +746,7 @@ T BBST<T>::CommonAncestor(T first, T second)
         return CommonAncestor(first, second, Root);
     }
 
-    return NULL;
+    return first + second;
 }
 
 template <class T>
@@ -760,7 +775,7 @@ void BBST<T>::Interface()
     {
         std::cin >> n;
 
-        if (n != -1)
+        if (static_cast<std::string>(n) != "-1")
         {
             AddItem(n);
         }
@@ -769,7 +784,6 @@ void BBST<T>::Interface()
             break;
         }
     }
-
 
     bool flag = true;
     
@@ -916,7 +930,7 @@ void BBST<T>::Interface()
             {
                 std::cin >> n;
 
-                if (n != -1)
+                if (static_cast<std::string>(n) != "-1")
                 {
                     tree->AddItem(n);
                 }
@@ -938,7 +952,7 @@ void BBST<T>::Interface()
             {
                 std::cin >> n;
 
-                if (n != -1)
+                if (static_cast<std::string>(n) != "-1")
                 {
                     tree->AddItem(n);
                 }
@@ -976,7 +990,7 @@ void BBST<T>::Interface()
             {
                 std::cin >> n;
 
-                if (n != -1)
+                if (static_cast<std::string>(n) != "-1")
                 {
                     tree->AddItem(n);
                 }
