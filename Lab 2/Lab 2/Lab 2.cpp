@@ -49,6 +49,8 @@ public:
     T FindMiddle();
     T FindSecondLargest();
     BBST<T>* CopyBBST();
+    void InsertBBST(BBST<T>* tree);
+    bool ContainsBBST(BBST<T>* tree);
     bool IsBalanced();
     bool EqualsBBST(BBST<T>* tree);
     T FatherNode(T item);
@@ -74,6 +76,8 @@ private:
     T FindMiddle(Node<T>* node, T key);
     void SumKeys(Node<T>* node, T& sum);
     Node<T>* CopyBBST(Node<T>* node, Node<T>* treeNode);
+    void InsertBBST(Node<T>* node);
+    bool ContainsBBST(Node<T>* node);
     void EqualsBBST(Node<T>* node, Node<T>* treeNode, bool& flag);
     T FatherNode(T item, Node<T>* node);
     T CommonAncestor(T first, T second, Node<T>* node);
@@ -574,6 +578,40 @@ Node<T>* BBST<T>::CopyBBST(Node<T>* node, Node<T>* treeNode)
 }
 
 template <class T>
+void BBST<T>::InsertBBST(BBST<T>* tree)
+{
+    InsertBBST(tree->Root);
+}
+
+template <class T>
+void BBST<T>::InsertBBST(Node<T>* node)
+{
+    if (node)
+    {
+        AddItem(node->Value);
+        InsertBBST(node->Left);
+        InsertBBST(node->Right);
+    }
+}
+
+template <class T>
+bool BBST<T>::ContainsBBST(BBST<T>* tree)
+{
+    return ContainsBBST(tree->Root);
+}
+
+template <class T>
+bool BBST<T>::ContainsBBST(Node<T>* node)
+{
+    if (node)
+    {
+        return Search(node->Value) && ContainsBBST(node->Left) && ContainsBBST(node->Right);
+    }
+
+    return true;
+}
+
+template <class T>
 bool BBST<T>::IsBalanced()
 {
     return Root->BalanceFactor < 2 && Root->BalanceFactor > -2;
@@ -663,7 +701,7 @@ T BBST<T>::CommonAncestor(T first, T second, Node<T>* node)
 template <class T>
 void BBST<T>::Interface()
 {
-    std::cout << "Enter your linked list. Enter -1 to stop.\n";
+    std::cout << "Enter keys of your binary tree. Enter -1 to stop.\n";
 
     T n;
 
