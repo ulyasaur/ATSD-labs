@@ -45,6 +45,7 @@ public:
     void PrintSorted();
     int CountNode();
     T SumKeys();
+    void DeleteEven();
     T FindSecondLargest();
     BBST<T>* CopyBBST();
     bool IsBalanced();
@@ -68,6 +69,7 @@ private:
     void PrintAsc(Node<T>* node);
     void PrintDes(Node<T>* node);
     void CountNode(Node<T>* node, int& counter);
+    Node<T>* DeleteEven(Node<T>* node);
     void SumKeys(Node<T>* node, T& sum);
     Node<T>* CopyBBST(Node<T>* node, Node<T>* treeNode);
     void EqualsBBST(Node<T>* node, Node<T>* treeNode, bool& flag);
@@ -448,6 +450,34 @@ void BBST<T>::SumKeys(Node<T>* node, T& sum)
         }
         SumKeys(node->Left, sum);
     }
+}
+
+template <class T>
+void BBST<T>::DeleteEven()
+{
+    Root = DeleteEven(Root);
+}
+
+template <class T>
+Node<T>* BBST<T>::DeleteEven(Node<T>* node)
+{
+    if (node)
+    {
+        while (node && node->Value % 2 == 0)
+        {
+            node = DeleteItem(node, node->Value);
+        }
+
+        if (node)
+        {
+            node->Left = DeleteEven(node->Left);
+            node->Right = DeleteEven(node->Right);
+        }
+
+        return node;
+    }
+
+    return NULL;
 }
 
 template <class T>
