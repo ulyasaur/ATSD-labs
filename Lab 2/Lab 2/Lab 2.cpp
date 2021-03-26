@@ -46,6 +46,7 @@ public:
     int CountNode();
     T SumKeys();
     void DeleteEven();
+    T FindMiddle();
     T FindSecondLargest();
     BBST<T>* CopyBBST();
     bool IsBalanced();
@@ -70,6 +71,7 @@ private:
     void PrintDes(Node<T>* node);
     void CountNode(Node<T>* node, int& counter);
     Node<T>* DeleteEven(Node<T>* node);
+    T FindMiddle(Node<T>* node, T key);
     void SumKeys(Node<T>* node, T& sum);
     Node<T>* CopyBBST(Node<T>* node, Node<T>* treeNode);
     void EqualsBBST(Node<T>* node, Node<T>* treeNode, bool& flag);
@@ -478,6 +480,58 @@ Node<T>* BBST<T>::DeleteEven(Node<T>* node)
     }
 
     return NULL;
+}
+
+template <class T>
+T BBST<T>::FindMiddle()
+{
+    T key = 0;
+    Node<T>* temp = Root;
+
+    while (temp && temp->Left)
+    {
+        temp = temp->Left;
+    }
+
+    key += temp->Value;
+
+    temp = Root;
+
+    while (temp && temp->Right)
+    {
+        temp = temp->Right;
+    }
+
+    key += temp->Value;
+    key /= 2;
+
+    return FindMiddle(Root, key);
+
+}
+
+template <class T>
+T BBST<T>::FindMiddle(Node<T>* node, T key)
+{
+    if (node)
+    {
+        T l = FindMiddle(node->Left, key);
+        T r = FindMiddle(node->Right, key);
+
+        T nval = abs(node->Value - key);
+        T lval = abs(l - key);
+        T rval = abs(r - key);
+
+        if (nval < lval && nval < rval)
+        {
+            return node->Value;
+        }
+        else if (rval < lval && rval < nval)
+        {
+            return r;
+        }
+
+        return l;
+    }
 }
 
 template <class T>
