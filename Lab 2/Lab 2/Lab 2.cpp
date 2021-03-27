@@ -42,7 +42,6 @@ public:
     BBST(Node<T>* root = NULL);
 
     void TreeDiagram();
-    void Interface();
     bool IsEmpty();
     bool IsFull();
     int Size();
@@ -87,7 +86,8 @@ private:
     void CountNode(Node<T>* node, int& counter);
     Node<int>* DeleteEven(Node<int>* node);
     int FindMiddle(Node<int>* node, int key);
-    T SumKeys(Node<T>* node);
+    std::string SumKeys(Node<std::string>* node);
+    int SumKeys(Node<int>* node);
     Node<T>* CopyBBST(Node<T>* node, Node<T>* treeNode);
     void InsertBBST(Node<T>* node);
     bool ContainsBBST(Node<T>* node);
@@ -477,12 +477,33 @@ T BBST<T>::SumKeys()
     return SumKeys(Root);
 }
 
-template <class T>
-T BBST<T>::SumKeys(Node<T>* node)
+template <>
+std::string BBST<std::string>::SumKeys(Node<std::string>* node)
 {
     if (node != NULL)
     {
-        T sum;
+        std::string sum;
+        if (node->Right)
+        {
+            sum = node->Right->Value;
+            sum += SumKeys(node->Right);
+        }
+        
+        if (node->Left)
+        {
+            sum += SumKeys(node->Left);
+        }
+
+        return sum;
+    }
+}
+
+template <>
+int BBST<int>::SumKeys(Node<int>* node)
+{
+    if (node != NULL)
+    {
+        int sum = NULL;
         if (node->Right)
         {
             sum = node->Right->Value;
@@ -764,279 +785,563 @@ T BBST<T>::CommonAncestor(T first, T second, Node<T>* node)
     return node->Value;
 }
 
-template <class T>
-void BBST<T>::Interface()
-{
-    std::cout << "Enter keys of your binary tree. Enter -1 to stop.\n";
-
-    T n;
-
-    while (true)
-    {
-        std::cin >> n;
-
-        if (static_cast<std::string>(n) != "-1")
-        {
-            AddItem(n);
-        }
-        else
-        {
-            break;
-        }
-    }
-
-    bool flag = true;
-    
-    std::cout << "Choose operation:\n "
-        << "1 - IsEmpty\n "
-        << "2 - IsFull\n "
-        << "3 - AddItem\n "
-        << "4 - DeleteItem\n "
-        << "5 - Search\n "
-        << "6 - PrintPreorder\n "
-        << "7 - PrintInorder\n "
-        << "8 - PrintPostorder\n "
-        << "9 - Size\n "
-        << "10 - PrintSorted\n"
-        << "11 - CountNode\n"
-        << "12 - SumKeys\n"
-        << "13 - DeleteEven\n"
-        << "14 - FindMiddle\n"
-        << "15 - FindSecondLargest\n"
-        << "16 - CopyBBST\n"
-        << "17 - InsertBBST\n"
-        << "18 - ContainsBBST\n"
-        << "19 - IsBalanced\n"
-        << "20 - EqualsBBST\n"
-        << "21 - SymmetricalBBST\n"
-        << "22 - FatherNode\n"
-        << "23 - CommonAncestor\n"
-        << "0 - Quit program\n ";
-
-    while (flag)
-    {
-        T item;
-        BBST<T>* tree = new BBST<T>();
-
-        int operation;
-        std::cin >> operation;
-
-        switch (operation)
-        {
-        case 1:
-            if (IsEmpty())
-            {
-                std::cout << "Tree is empty\n";
-            }
-            else
-            {
-                std::cout << "Tree is not empty\n";
-            }
-            break;
-
-        case 2:
-            if (IsFull())
-            {
-                std::cout << "Tree is full\n";
-            }
-            else
-            {
-                std::cout << "Tree is not full\n";
-            }
-            break;
-
-        case 3:
-            std::cout << "Enter an item to add: ";
-            std::cin >> item;
-            AddItem(item);
-            std::cout << "Your tree now:\n";
-            TreeDiagram();
-            break;
-
-        case 4:
-            std::cout << "Enter an item to delete: ";
-            std::cin >> item;
-            DeleteItem(item);
-            std::cout << "Your tree now:\n";
-            TreeDiagram();
-            break;
-
-        case 5:
-            std::cout << "Enter an item to search: ";
-            std::cin >> item;
-
-            if (Search(item))
-            {
-                std::cout << "Item is in the tree\n";
-            }
-            else
-            {
-                std::cout << "Item is not in the tree\n";
-            }
-            break;
-
-        case 6:
-            PrintPreorder();
-            break;
-
-        case 7:
-            PrintInorder();
-            break;
-
-        case 8:
-            PrintPostorder();
-            break;
-
-        case 9:
-            std::cout << "Size of your tree: " << Size() << "\n";
-            break;
-
-        case 10:
-            PrintSorted();
-            break;
-
-        case 11:
-            std::cout << "Number of left son nodes: " << CountNode() << "\n";
-            break;
-
-        case 12:
-            std::cout << "Sum of keys in right son nodes: " << SumKeys() << "\n";
-            break;
-
-        case 13:
-            DeleteEven();
-            std::cout << "Your tree now:\n";
-            TreeDiagram();
-            break;
-
-        case 14:
-            std::cout << "The tree key which is the nearest to the valuemid: " << FindMiddle() << "\n";
-            break;
-
-        case 15:
-            std::cout << "The second largest key: " << FindSecondLargest() << "\n";
-            break;
-
-        case 16:
-            tree = CopyBBST();
-            std::cout << "Copy of your tree:\n";
-            tree->TreeDiagram();
-            break;
-
-        case 17:
-            std::cout << "Enter keys of your binary tree. Enter -1 to stop.\n";
-
-            while (true)
-            {
-                std::cin >> n;
-
-                if (static_cast<std::string>(n) != "-1")
-                {
-                    tree->AddItem(n);
-                }
-                else
-                {
-                    break;
-                }
-            }
-
-            InsertBBST(tree);
-            std::cout << "Your tree now:\n";
-            TreeDiagram();
-            break;
-
-        case 18:
-            std::cout << "Enter keys of your binary tree. Enter -1 to stop.\n";
-
-            while (true)
-            {
-                std::cin >> n;
-
-                if (static_cast<std::string>(n) != "-1")
-                {
-                    tree->AddItem(n);
-                }
-                else
-                {
-                    break;
-                }
-            }
-
-            if (ContainsBBST(tree))
-            {
-                std::cout << "This BBST is in the tree\n";
-            }
-            else
-            {
-                std::cout << "This BBST is not in the tree\n";
-            }
-            break;
-
-        case 19:
-            if (IsBalanced())
-            {
-                std::cout << "Tree is balanced\n";
-            }
-            else
-            {
-                std::cout << "Tree is not balanced\n";
-            }
-            break;
-
-        case 20:
-            std::cout << "Enter keys of your binary tree. Enter -1 to stop.\n";
-
-            while (true)
-            {
-                std::cin >> n;
-
-                if (static_cast<std::string>(n) != "-1")
-                {
-                    tree->AddItem(n);
-                }
-                else
-                {
-                    break;
-                }
-            }
-
-            if (EqualsBBST(tree))
-            {
-                std::cout << "Trees are equal\n";
-            }
-            else
-            {
-                std::cout << "Trees are not equal\n";
-            }
-            break;
-
-        case 21:
-            tree = SymmetricalBBST();
-            std::cout << "Symmetrical tree:\n";
-            tree->TreeDiagram();
-            break;
-
-        case 22:
-            std::cout << "Enter key:\n";
-            std::cin >> item;
-            std::cout << "Father node: " << FatherNode(item) << "\n";
-            break;
-
-        case 23:
-            std::cout << "Enter keys:\n";
-            std::cin >> item >> n;
-            std::cout << "Ancestor: " << CommonAncestor(item, n) << "\n";
-            break;
-
-        case 0:
-            flag = false;
-            break;
-        }
-    }
-}
-
 int main()
 {
-    BBST<int>* tree = new BBST<int>();
-    tree->Interface();
+    std::cout << "Choose int {i} or string {s}\n";
+    char op;
+    std::cin >> op;
+
+    if (op == 's')
+    {
+        BBST<std::string>* tree = new BBST<std::string>();
+
+        std::cout << "Enter keys of your binary tree. Enter -1 to stop.\n";
+
+        std::string n;
+
+        while (true)
+        {
+            std::cin >> n;
+
+            if (n != "-1")
+            {
+                tree->AddItem(n);
+            }
+            else
+            {
+                break;
+            }
+        }
+
+        std::cout << "Your tree now:\n";
+        tree->TreeDiagram();
+
+        bool flag = true;
+
+        std::cout << "Choose operation:\n "
+            << "1 - IsEmpty\n "
+            << "2 - IsFull\n "
+            << "3 - AddItem\n "
+            << "4 - DeleteItem\n "
+            << "5 - Search\n "
+            << "6 - PrintPreorder\n "
+            << "7 - PrintInorder\n "
+            << "8 - PrintPostorder\n "
+            << "9 - Size\n "
+            << "10 - PrintSorted\n"
+            << "11 - CountNode\n"
+            << "12 - SumKeys\n"
+            << "13 - FindSecondLargest\n"
+            << "14 - CopyBBST\n"
+            << "15 - InsertBBST\n"
+            << "16 - ContainsBBST\n"
+            << "17 - IsBalanced\n"
+            << "18 - EqualsBBST\n"
+            << "10 - SymmetricalBBST\n"
+            << "20 - FatherNode\n"
+            << "21 - CommonAncestor\n"
+            << "0 - Quit program\n ";
+
+        while (flag)
+        {
+            std::string item;
+            BBST<std::string>* tree1 = new BBST<std::string>();
+
+            int operation;
+            std::cin >> operation;
+
+            switch (operation)
+            {
+            case 1:
+                if (tree->IsEmpty())
+                {
+                    std::cout << "Tree is empty\n";
+                }
+                else
+                {
+                    std::cout << "Tree is not empty\n";
+                }
+                break;
+
+            case 2:
+                if (tree->IsFull())
+                {
+                    std::cout << "Tree is full\n";
+                }
+                else
+                {
+                    std::cout << "Tree is not full\n";
+                }
+                break;
+
+            case 3:
+                std::cout << "Enter an item to add: ";
+                std::cin >> item;
+                tree->AddItem(item);
+                std::cout << "Your tree now:\n";
+                tree->TreeDiagram();
+                break;
+
+            case 4:
+                std::cout << "Enter an item to delete: ";
+                std::cin >> item;
+                tree->DeleteItem(item);
+                std::cout << "Your tree now:\n";
+                tree->TreeDiagram();
+                break;
+
+            case 5:
+                std::cout << "Enter an item to search: ";
+                std::cin >> item;
+
+                if (tree->Search(item))
+                {
+                    std::cout << "Item is in the tree\n";
+                }
+                else
+                {
+                    std::cout << "Item is not in the tree\n";
+                }
+                break;
+
+            case 6:
+                tree->PrintPreorder();
+                break;
+
+            case 7:
+                tree->PrintInorder();
+                break;
+
+            case 8:
+                tree->PrintPostorder();
+                break;
+
+            case 9:
+                std::cout << "Size of your tree: " << tree->Size() << "\n";
+                break;
+
+            case 10:
+                tree->PrintSorted();
+                break;
+
+            case 11:
+                std::cout << "Number of left son nodes: " << tree->CountNode() << "\n";
+                break;
+
+            case 12:
+                std::cout << "Sum of keys in right son nodes: " << tree->SumKeys() << "\n";
+                break;
+
+            case 13:
+                std::cout << "The second largest key: " << tree->FindSecondLargest() << "\n";
+                break;
+
+            case 14:
+                tree1 = tree->CopyBBST();
+                std::cout << "Copy of your tree:\n";
+                tree1->TreeDiagram();
+                break;
+
+            case 15:
+                std::cout << "Enter keys of your binary tree. Enter -1 to stop.\n";
+
+                while (true)
+                {
+                    std::cin >> n;
+
+                    if (n != "-1")
+                    {
+                        tree1->AddItem(n);
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+                std::cout << "You entered:\n";
+                tree1->TreeDiagram();
+
+                tree->InsertBBST(tree1);
+                std::cout << "Your tree now:\n";
+                tree->TreeDiagram();
+                break;
+
+            case 16:
+                std::cout << "Enter keys of your binary tree. Enter -1 to stop.\n";
+
+                while (true)
+                {
+                    std::cin >> n;
+
+                    if (n != "-1")
+                    {
+                        tree1->AddItem(n);
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+
+                std::cout << "You entered:\n";
+                tree1->TreeDiagram();
+
+                if (tree->ContainsBBST(tree1))
+                {
+                    std::cout << "This BBST is in the tree\n";
+                }
+                else
+                {
+                    std::cout << "This BBST is not in the tree\n";
+                }
+                break;
+
+            case 17:
+                if (tree->IsBalanced())
+                {
+                    std::cout << "Tree is balanced\n";
+                }
+                else
+                {
+                    std::cout << "Tree is not balanced\n";
+                }
+                break;
+
+            case 18:
+                std::cout << "Enter keys of your binary tree. Enter -1 to stop.\n";
+
+                while (true)
+                {
+                    std::cin >> n;
+
+                    if (n != "-1")
+                    {
+                        tree1->AddItem(n);
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+
+                std::cout << "You entered:\n";
+                tree1->TreeDiagram();
+
+                if (tree->EqualsBBST(tree1))
+                {
+                    std::cout << "Trees are equal\n";
+                }
+                else
+                {
+                    std::cout << "Trees are not equal\n";
+                }
+                break;
+
+            case 19:
+                tree1 = tree->SymmetricalBBST();
+                std::cout << "Symmetrical tree:\n";
+                tree1->TreeDiagram();
+                break;
+
+            case 20:
+                std::cout << "Enter key:\n";
+                std::cin >> item;
+                std::cout << "Father node: " << tree->FatherNode(item) << "\n";
+                break;
+
+            case 21:
+                std::cout << "Enter keys:\n";
+                std::cin >> item >> n;
+                std::cout << "Ancestor: " << tree->CommonAncestor(item, n) << "\n";
+                break;
+
+            case 0:
+                flag = false;
+                break;
+            }
+        }
+    }
+    else
+    {
+        BBST<int>* tree = new BBST<int>();
+
+        std::cout << "Enter keys of your binary tree. Enter -1 to stop.\n";
+
+        int n;
+
+        while (true)
+        {
+            std::cin >> n;
+
+            if (n != -1)
+            {
+                tree->AddItem(n);
+            }
+            else
+            {
+                break;
+            }
+        }
+
+        std::cout << "Your tree now:\n";
+        tree->TreeDiagram();
+
+        bool flag = true;
+
+        std::cout << "Choose operation:\n "
+            << "1 - IsEmpty\n "
+            << "2 - IsFull\n "
+            << "3 - AddItem\n "
+            << "4 - DeleteItem\n "
+            << "5 - Search\n "
+            << "6 - PrintPreorder\n "
+            << "7 - PrintInorder\n "
+            << "8 - PrintPostorder\n "
+            << "9 - Size\n "
+            << "10 - PrintSorted\n"
+            << "11 - CountNode\n"
+            << "12 - SumKeys\n"
+            << "13 - DeleteEven\n"
+            << "14 - FindMiddle\n"
+            << "15 - FindSecondLargest\n"
+            << "16 - CopyBBST\n"
+            << "17 - InsertBBST\n"
+            << "18 - ContainsBBST\n"
+            << "19 - IsBalanced\n"
+            << "20 - EqualsBBST\n"
+            << "21 - SymmetricalBBST\n"
+            << "22 - FatherNode\n"
+            << "23 - CommonAncestor\n"
+            << "0 - Quit program\n ";
+
+        while (flag)
+        {
+            int item;
+            BBST<int>* tree1 = new BBST<int>();
+
+            int operation;
+            std::cin >> operation;
+
+            switch (operation)
+            {
+            case 1:
+                if (tree->IsEmpty())
+                {
+                    std::cout << "Tree is empty\n";
+                }
+                else
+                {
+                    std::cout << "Tree is not empty\n";
+                }
+                break;
+
+            case 2:
+                if (tree->IsFull())
+                {
+                    std::cout << "Tree is full\n";
+                }
+                else
+                {
+                    std::cout << "Tree is not full\n";
+                }
+                break;
+
+            case 3:
+                std::cout << "Enter an item to add: ";
+                std::cin >> item;
+                tree->AddItem(item);
+                std::cout << "Your tree now:\n";
+                tree->TreeDiagram();
+                break;
+
+            case 4:
+                std::cout << "Enter an item to delete: ";
+                std::cin >> item;
+                tree->DeleteItem(item);
+                std::cout << "Your tree now:\n";
+                tree->TreeDiagram();
+                break;
+
+            case 5:
+                std::cout << "Enter an item to search: ";
+                std::cin >> item;
+
+                if (tree->Search(item))
+                {
+                    std::cout << "Item is in the tree\n";
+                }
+                else
+                {
+                    std::cout << "Item is not in the tree\n";
+                }
+                break;
+
+            case 6:
+                tree->PrintPreorder();
+                break;
+
+            case 7:
+                tree->PrintInorder();
+                break;
+
+            case 8:
+                tree->PrintPostorder();
+                break;
+
+            case 9:
+                std::cout << "Size of your tree: " << tree->Size() << "\n";
+                break;
+
+            case 10:
+                tree->PrintSorted();
+                break;
+
+            case 11:
+                std::cout << "Number of left son nodes: " << tree->CountNode() << "\n";
+                break;
+
+            case 12:
+                std::cout << "Sum of keys in right son nodes: " << tree->SumKeys() << "\n";
+                break;
+
+            case 13:
+                tree->DeleteEven();
+                std::cout << "Your tree now:\n";
+                tree->TreeDiagram();
+                break;
+
+            case 14:
+                std::cout << "The tree key which is the nearest to the valuemid: " << tree->FindMiddle() << "\n";
+                break;
+
+            case 15:
+                std::cout << "The second largest key: " << tree->FindSecondLargest() << "\n";
+                break;
+
+            case 16:
+                tree1 = tree->CopyBBST();
+                std::cout << "Copy of your tree:\n";
+                tree1->TreeDiagram();
+                break;
+
+            case 17:
+                std::cout << "Enter keys of your binary tree. Enter -1 to stop.\n";
+
+                while (true)
+                {
+                    std::cin >> n;
+
+                    if (n != -1)
+                    {
+                        tree1->AddItem(n);
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+
+                std::cout << "You entered:\n";
+                tree1->TreeDiagram();
+
+                tree->InsertBBST(tree1);
+                std::cout << "Your tree now:\n";
+                tree->TreeDiagram();
+                break;
+
+            case 18:
+                std::cout << "Enter keys of your binary tree. Enter -1 to stop.\n";
+
+                while (true)
+                {
+                    std::cin >> n;
+
+                    if (n != -1)
+                    {
+                        tree1->AddItem(n);
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+
+                std::cout << "You entered:\n";
+                tree1->TreeDiagram();
+
+                if (tree->ContainsBBST(tree1))
+                {
+                    std::cout << "This BBST is in the tree\n";
+                }
+                else
+                {
+                    std::cout << "This BBST is not in the tree\n";
+                }
+                break;
+
+            case 19:
+                if (tree->IsBalanced())
+                {
+                    std::cout << "Tree is balanced\n";
+                }
+                else
+                {
+                    std::cout << "Tree is not balanced\n";
+                }
+                break;
+
+            case 20:
+                std::cout << "Enter keys of your binary tree. Enter -1 to stop.\n";
+
+                while (true)
+                {
+                    std::cin >> n;
+
+                    if (n != -1)
+                    {
+                        tree1->AddItem(n);
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+
+                std::cout << "You entered:\n";
+                tree1->TreeDiagram();
+
+                if (tree->EqualsBBST(tree1))
+                {
+                    std::cout << "Trees are equal\n";
+                }
+                else
+                {
+                    std::cout << "Trees are not equal\n";
+                }
+                break;
+
+            case 21:
+                tree1 = tree->SymmetricalBBST();
+                std::cout << "Symmetrical tree:\n";
+                tree1->TreeDiagram();
+                break;
+
+            case 22:
+                std::cout << "Enter key:\n";
+                std::cin >> item;
+                std::cout << "Father node: " << tree->FatherNode(item) << "\n";
+                break;
+
+            case 23:
+                std::cout << "Enter keys:\n";
+                std::cin >> item >> n;
+                std::cout << "Ancestor: " << tree->CommonAncestor(item, n) << "\n";
+                break;
+
+            case 0:
+                flag = false;
+                break;
+            }
+    }
+}
 }
