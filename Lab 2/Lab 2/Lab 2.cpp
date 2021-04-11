@@ -1,7 +1,6 @@
 ﻿#include <iostream>
 #include <algorithm>
 #include <string>
-#include <type_traits>
 
 template <class T>
 class Node

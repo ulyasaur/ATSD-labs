@@ -1,7 +1,7 @@
 ﻿  Lab 2.cpp
-D:\Git\ATSD labs\Lab 2\Lab 2\Lab 2.cpp(499): warning C4715: BBST<std::basic_string<char,std::char_traits<char>,std::allocator<char> > >::SumKeys: значение возвращается не при всех путях выполнения
-D:\Git\ATSD labs\Lab 2\Lab 2\Lab 2.cpp(520): warning C4715: BBST<int>::SumKeys: значение возвращается не при всех путях выполнения
-D:\Git\ATSD labs\Lab 2\Lab 2\Lab 2.cpp(600): warning C4715: BBST<int>::FindMiddle: значение возвращается не при всех путях выполнения
-D:\Git\ATSD labs\Lab 2\Lab 2\Lab 2.cpp(217): warning C4715: BBST<int>::BalanceTree: значение возвращается не при всех путях выполнения
-D:\Git\ATSD labs\Lab 2\Lab 2\Lab 2.cpp(217): warning C4715: BBST<std::basic_string<char,std::char_traits<char>,std::allocator<char> > >::BalanceTree: значение возвращается не при всех путях выполнения
+D:\Git\ATSD labs\Lab 2\Lab 2\Lab 2.cpp(519): warning C4715: BBST<int>::SumKeys: значение возвращается не при всех путях выполнения
+D:\Git\ATSD labs\Lab 2\Lab 2\Lab 2.cpp(498): warning C4715: BBST<std::basic_string<char,std::char_traits<char>,std::allocator<char> > >::SumKeys: значение возвращается не при всех путях выполнения
+D:\Git\ATSD labs\Lab 2\Lab 2\Lab 2.cpp(599): warning C4715: BBST<int>::FindMiddle: значение возвращается не при всех путях выполнения
+D:\Git\ATSD labs\Lab 2\Lab 2\Lab 2.cpp(216): warning C4715: BBST<int>::BalanceTree: значение возвращается не при всех путях выполнения
+D:\Git\ATSD labs\Lab 2\Lab 2\Lab 2.cpp(216): warning C4715: BBST<std::basic_string<char,std::char_traits<char>,std::allocator<char> > >::BalanceTree: значение возвращается не при всех путях выполнения
   Lab 2.vcxproj -> D:\Git\ATSD labs\Lab 2\Debug\Lab 2.exe
