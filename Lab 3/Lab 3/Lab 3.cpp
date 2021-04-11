@@ -8,10 +8,11 @@ public:
 
     void AddItem(T item);
     void PrintList();
+    int Size();
     bool IsFull();
 
 private:
-    int Size;
+    int MaxSize;
     int LastItem;
     T* Values;
 
@@ -21,7 +22,7 @@ private:
 template <class T>
 List<T>::List(int size)
 {
-    Size = size;
+    MaxSize = size;
     LastItem = -1;
     Values = new T[size];
 }
@@ -30,13 +31,13 @@ template <class T>
 void List<T>::DoubleSize()
 {
     T* temp = Values;
-    Values = new T[Size * 2 + 1];
-    for (int i = 0; i < Size; ++i)
+    Values = new T[MaxSize * 2 + 1];
+    for (int i = 0; i < MaxSize; ++i)
     {
         Values[i] = temp[i];
     }
     delete[] temp;
-    Size *= 2;
+    MaxSize *= 2;
 }
 
 template <class T>
@@ -47,7 +48,7 @@ void List<T>::AddItem(T item)
         DoubleSize();
     }
 
-    Values[++last] = item;
+    Values[++LastItem] = item;
 }
 
 template <class T>
@@ -61,9 +62,15 @@ void List<T>::PrintList()
 }
 
 template <class T>
+int List<T>::Size()
+{
+    return LastItem + 1;
+}
+
+template <class T>
 bool List<T>::IsFull()
 {
-    return LastItem + 1 == Size;
+    return LastItem + 1 == MaxSize;
 }
 
 int main()
