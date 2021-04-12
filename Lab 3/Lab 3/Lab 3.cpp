@@ -12,6 +12,8 @@ public:
     void PrintList();
     int Size();
     bool IsFull();
+    bool IsEmpty();
+    T DeleteTop();
 
 private:
     int MaxSize;
@@ -21,6 +23,7 @@ private:
     void DoubleSize();
     void HeapsortMax(int index, int size);
     void HeapsortMin(int index, int size);
+    void SiftDown(int item);
 };
 
 template <class T>
@@ -67,9 +70,7 @@ void List<T>::HeapsortMax()
 
     for (int i = size - 1; i > 0; i--) 
     {
-        T temp = Values[i];
-        Values[i] = Values[0];
-        Values[0] = temp;
+        std::swap(Values[i], Values[0]);
 
         HeapsortMax(i, 0);
     }
@@ -94,9 +95,7 @@ void List<T>::HeapsortMax(int size, int index)
 
     if (largest != index)
     {
-        T temp = Values[index];
-        Values[index] = Values[largest];
-        Values[largest] = temp;
+        std::swap(Values[index], Values[largest]);
 
         HeapsortMax(size, largest);
     }
@@ -114,9 +113,7 @@ void List<T>::HeapsortMin()
 
     for (int i = size - 1; i > 0; i--) 
     {
-        T temp = Values[i];
-        Values[i] = Values[0];
-        Values[0] = temp;
+        std::swap(Values[i], Values[0]);
 
         HeapsortMin(i, 0);
     }
@@ -141,11 +138,61 @@ void List<T>::HeapsortMin(int size, int index)
 
     if (smallest != index)
     {
-        T temp = Values[index];
-        Values[index] = Values[smallest];
-        Values[smallest] = temp;
+        std::swap(Values[index], Values[smallest]);
 
         HeapsortMin(size, smallest);
+    }
+}
+
+template <class T>
+T List<T>::DeleteTop()
+{
+    HeapsortMin();
+    std::swap(Values[0], Values[LastItem]);
+    Values[LastItem--] = NULL;
+    SiftDown(0);
+    for (int i = 0; i < LastItem; i++)
+    {
+        std::swap(Values[i], Values[i + 1]);
+    }
+    return 0;
+}
+
+template <class T>
+void List<T>::SiftDown(int item)
+{
+    int size = LastItem + 1;
+    int left = 2 * item + 1;
+    int right = 2 * item + 2;
+    int min_index;
+
+    if (right >= size)
+    {
+        if (left >= size)
+        {
+            return;
+        }
+        else
+        {
+            min_index = left;
+        }
+    }
+    else
+    {
+        if (Values[left] <= Values[right])
+        {
+            min_index = left;
+        }
+        else
+        {
+            min_index = right;
+        }
+    }
+
+    if (Values[item] > Values[min_index])
+    {
+        std::swap(Values[item], Values[min_index]);
+        SiftDown(min_index);
     }
 }
 
@@ -171,10 +218,19 @@ bool List<T>::IsFull()
     return LastItem + 1 == MaxSize;
 }
 
+template <class T>
+bool List<T>::IsFull()
+{
+    return LastItem == -1;
+}
+
 int main()
 {
     List<int> list;
     int n;
+
+    std::cout << "Enter your list. Enter -1 to stop\n";
+
     std::cin >> n;
 
     while (n != -1)
@@ -183,7 +239,12 @@ int main()
         std::cin >> n;
     }
 
+    std::cout << "Your list: ";
     list.PrintList();
-    list.HeapsortMin();
+    std::cout << "Your list (maxheap): ";
+    list.HeapsortMax();
+    list.PrintList();
+    std::cout << "Your list after DeleteTop() (minheap): ";
+    list.DeleteTop();
     list.PrintList();
 }
