@@ -1,5 +1,6 @@
 ﻿#include <iostream>
 #include <string>
+#include <vector>
 
 using namespace std;
 
@@ -25,8 +26,6 @@ class AdjList
 public:
     AdjList(Node* first = NULL);
     void AddItem(Node* node);
-
-private:
     Node* First;
 };
 
@@ -44,6 +43,52 @@ void AdjList::AddItem(Node* node)
     }
 
     temp->Next = node;
+}
+
+class Graph
+{
+public:
+    vector<AdjList*> Nodes;
+    vector<string> Names;
+
+    void AddItem(string father, string child, int weight);
+};
+
+void Graph::AddItem(string father, string child, int weight)
+{
+    bool flagF = false;
+    bool flagC = false;
+    int index = -1;
+    for (int i = 0; i < Names.size(); i++)
+    {
+        if (Names[i] == father)
+        {
+            flagF = true;
+            index = i;
+        }
+
+        if (Names[i] == child)
+        {
+            flagC = true;
+        }
+    }
+
+    if (!flagC)
+    {
+        Names.push_back(child);
+        Nodes.push_back(new AdjList(new Node(child)));
+        return;
+    }
+    
+    if (!flagF)
+    {
+        Names.push_back(child);
+        Nodes.push_back(new AdjList(new Node(child)));
+        Nodes[Nodes.size() - 1]->AddItem(new Node(child, weight));
+        return;
+    }
+
+    Nodes[index]->AddItem(new Node(child, weight));
 }
 
 int main()
