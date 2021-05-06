@@ -53,6 +53,7 @@ public:
 
     void PrintGraph();
     void AddItem(string father, string child, int weight);
+    void Dijkstra(string source);
     int** AdjMatrix();
 
     int Size();
@@ -122,6 +123,68 @@ void Graph::AddItem(string father, string child, int weight)
     }
 }
 
+void Graph::Dijkstra(string source)
+{
+    int srcInd;
+
+    int* distance = new int[Size()];
+    bool* isSet = new bool[Size()];
+
+    int** matrix = AdjMatrix();
+    for (int i = 0; i < Size(); i++)
+    {
+        distance[i] = INT_MAX;
+        isSet[i] = false;
+        if (Names[i] == source)
+        {
+            srcInd = i;
+            distance[i] = 0;
+            isSet[i] = true;
+        }
+    }
+
+    for (int i = 0; i < Size(); i++)
+    {
+        if (matrix[srcInd][i] != 0)
+        {
+            distance[i] = matrix[srcInd][i];
+        }        
+    }
+
+    for (int i = 0; i < Size(); i++)
+    {
+        int minIndex = -1, min = INT_MAX;
+        for (int j = 0; j < Size(); j++)
+        {
+            if (!isSet[j] && distance[j] <= min)
+            {
+                min = distance[j];
+                minIndex = j;
+            }
+        }
+        isSet[minIndex] = true;
+
+        for (int j = 0; j < Size(); j++)
+        {
+            if (!isSet[j] && matrix[minIndex][j] && distance[minIndex] != INT_MAX
+                && distance[minIndex] + matrix[minIndex][j] < distance[j])
+            {
+                distance[j] = distance[minIndex] + matrix[minIndex][j];
+            }
+        }
+    }
+
+    cout << "Vertex   Distance\n";
+    for (int i = 0; i < Size(); i++)
+    {
+        cout.width(6);
+        cout << Names[i];
+        cout.width(11);
+        cout << distance[i];
+        cout << "\n";
+    }
+}
+
 int** Graph::AdjMatrix()
 {
     int** matrix = new int*[Names.size()];
@@ -183,4 +246,6 @@ int main()
     }
 
     graph->PrintGraph();
+
+    graph->Dijkstra("1");
 }
