@@ -51,8 +51,37 @@ public:
     vector<AdjList*> Nodes;
     vector<string> Names;
 
+    void PrintGraph();
     void AddItem(string father, string child, int weight);
+    int** AdjMatrix();
+
+    int Size();
 };
+
+void Graph::PrintGraph()
+{
+    int** matrix = AdjMatrix();
+
+    cout << "  ";
+
+    for (int i = 0; i < Size(); i++)
+    {
+        cout.width(3);
+        cout << Names[i] << " ";
+    }
+    cout << "\n";
+
+    for (int i = 0; i < Size(); i++)
+    {
+        cout << Names[i] << " ";
+        for (int j = 0; j < Size(); j++)
+        {
+            cout.width(3);
+            cout << matrix[i][j] << " ";
+        }
+        cout << "\n";
+    }
+}
 
 void Graph::AddItem(string father, string child, int weight)
 {
@@ -73,25 +102,85 @@ void Graph::AddItem(string father, string child, int weight)
         }
     }
 
+    if (!flagF)
+    {
+        Names.push_back(father);
+        Nodes.push_back(new AdjList(new Node(father)));
+        Nodes[Nodes.size() - 1]->AddItem(new Node(child, weight));
+        return;
+    }
+    else
+    {
+        Nodes[index]->AddItem(new Node(child, weight));
+    }
+    
     if (!flagC)
     {
         Names.push_back(child);
         Nodes.push_back(new AdjList(new Node(child)));
-        return;
+        Nodes[Nodes.size() - 1]->AddItem(new Node(father, weight));
     }
-    
-    if (!flagF)
+}
+
+int** Graph::AdjMatrix()
+{
+    int** matrix = new int*[Names.size()];
+
+    for (int i = 0; i < Names.size(); i++)
     {
-        Names.push_back(child);
-        Nodes.push_back(new AdjList(new Node(child)));
-        Nodes[Nodes.size() - 1]->AddItem(new Node(child, weight));
-        return;
+        matrix[i] = new int[Names.size()];
+
+        for (int j = 0; j < Names.size(); j++)
+        {
+            matrix[i][j] = 0;
+        }
     }
 
-    Nodes[index]->AddItem(new Node(child, weight));
+    for (int i = 0; i < Nodes.size(); i++)
+    {
+        Node* temp = Nodes[i]->First->Next;
+
+        for (int j = 0; j < Nodes.size(); j++)
+        {
+            for (int k = 0; k < Nodes.size(); k++)
+            {
+                if (temp->Name == Names[k])
+                {
+                    matrix[i][k] = temp->Weight;
+                    matrix[k][i] = temp->Weight;
+                    temp = temp->Next;
+                    break;
+                }
+            }
+            if (!temp)
+            {
+                break;
+            }
+        }
+    }
+
+    return matrix;
+}
+
+int Graph::Size()
+{
+    return Names.size();
 }
 
 int main()
 {
+    Graph* graph = new Graph();
+    string father;
+    string child;
+    int weight;
 
+    cin >> father >> child >> weight;
+
+    while (weight != -1)
+    {
+        graph->AddItem(father, child, weight);
+        cin >> father >> child >> weight;
+    }
+
+    graph->PrintGraph();
 }
