@@ -15,8 +15,12 @@ public:
 
     void PrintGraph();
     void Dijkstra(string source);
-    //void Kruskal();
+    void Kruskal();
     vector <pair<int, pair<string, string>>> Edges();
+
+private:
+    int Find(int parent[], int ind);
+    int Index(string name);
 };
 
 Graph::Graph()
@@ -31,17 +35,18 @@ Graph::Graph()
     for (int i = 0; i < Size; i++)
     {
         cin >> Names[i];
+        Matrix[i] = new int[Size];
     }
 
     for (int i = 0; i < Size; i++)
     {
-        Matrix[i] = new int[Size];
-
         for (int j = i; j < Size; j++)
         {
             cout << "Weight of edge " << Names[i] << " - " << Names[j] << " : ";
-            cin >> Matrix[i][j];
-            Matrix[j][i] = Matrix[i][j];
+            int value;
+            cin >> value;
+            Matrix[i][j] = value;
+            Matrix[j][i] = value;
         }
     }
 }
@@ -130,6 +135,62 @@ void Graph::Dijkstra(string source)
     }
 }
 
+int Graph::Find(int parent[], int ind)
+{
+    if (parent[ind] == ind)
+    {
+        return ind;
+    }
+
+    return Find(parent, parent[ind]);
+}
+
+int Graph::Index(string name)
+{
+    for (int i = 0; i < Size; i++)
+    {
+        if (Names[i] == name)
+        {
+            return i;
+        }
+    }
+}
+
+void Graph::Kruskal()
+{
+    vector <pair<int, pair<string, string>>> edges = Edges();
+    vector <pair<int, pair<string, string>>> mst;
+    int weight = 0;
+
+    int* parent = new int[Size];
+    for (int i = 0; i < Size; i++)
+    {
+        parent[i] = i;
+    }
+
+    for (int i = 0; i < edges.size() && mst.size() < Size; i++)
+    {
+        int p1 = Find(parent, Index(edges[i].second.first));
+        int p2 = Find(parent, Index(edges[i].second.second));
+        if (p1 != p2)
+        {
+            mst.push_back(edges[i]);
+            weight += edges[i].first;
+            parent[p1] = p2;
+        }
+    }
+
+    cout << " Edge   Weight\n";
+
+    for (int i = 0; i < mst.size(); i++)
+    {
+        cout.width(5);
+        cout << mst[i].second.first << " - " << mst[i].second.second;
+        cout.width(9);
+        cout << mst[i].first << "\n";
+    }
+    cout << "\nWeight of MST is " << weight << "\n";
+}
 
 vector <pair<int, pair<string, string>>> Graph::Edges()
 {
@@ -139,7 +200,12 @@ vector <pair<int, pair<string, string>>> Graph::Edges()
     {
         for (int j = i + 1; j < Size; j++)
         {
-            edges.push_back(make_pair(Matrix[i][j], make_pair(Names[i], Names[j])));
+            if (Matrix[i][j] != 0)
+            {
+                pair<string, string> str = make_pair(Names[i], Names[j]);
+                pair<int, pair<string, string>> edge = make_pair(Matrix[i][j], str);
+                edges.push_back(edge);
+            }
         }        
     }
 
@@ -151,4 +217,7 @@ int main()
 {
     Graph* graph = new Graph();
     graph->PrintGraph();
+
+    graph->Kruskal();
+    graph->Dijkstra("0");
 }
