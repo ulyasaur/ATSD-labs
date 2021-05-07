@@ -1,6 +1,2 @@
 ﻿  Lab 4.cpp
-D:\Git\ATSD labs\Lab 4\Lab 4\Lab 4.cpp(171,23): warning C4018: <: несоответствие типов со знаком и без знака
-D:\Git\ATSD labs\Lab 4\Lab 4\Lab 4.cpp(171,52): warning C4018: <: несоответствие типов со знаком и без знака
-D:\Git\ATSD labs\Lab 4\Lab 4\Lab 4.cpp(185,23): warning C4018: <: несоответствие типов со знаком и без знака
-D:\Git\ATSD labs\Lab 4\Lab 4\Lab 4.cpp(157): warning C4715: Graph::Index: значение возвращается не при всех путях выполнения
   Lab 4.vcxproj -> D:\Git\ATSD labs\Lab 4\Debug\Lab 4.exe
