@@ -33,6 +33,23 @@ void quick_sort(int arr[], int low, int high)
     }
 }
 
+void insertion_sort(int arr[], int low, int high)
+{
+    int i, key, j;
+    for (i = low + 1; i < high; i++)
+    {
+        key = arr[i];
+        j = i - 1;
+
+        while (j >= low && arr[j] > key)
+        {
+            arr[j + 1] = arr[j];
+            j = j - 1;
+        }
+        arr[j + 1] = key;
+    }
+}
+
 int main()
 {
 
